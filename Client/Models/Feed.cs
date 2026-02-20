@@ -16,13 +16,13 @@ internal class Feed
     public string Title { get; set; }
 
     [JsonPropertyName("url")]
-    public Uri Url { get; set; }
+    public string Url { get; set; }
 
     [JsonPropertyName("originalUrl")]
-    public Uri OriginalUrl { get; set; }
+    public string OriginalUrl { get; set; }
 
     [JsonPropertyName("link")]
-    public Uri Link { get; set; }
+    public string Link { get; set; }
 
     [JsonPropertyName("description")]
     public string Description { get; set; }
@@ -34,10 +34,10 @@ internal class Feed
     public string OwnerName { get; set; }
 
     [JsonPropertyName("image")]
-    public Uri Image { get; set; }
+    public string Image { get; set; }
 
     [JsonPropertyName("artwork")]
-    public Uri Artwork { get; set; }
+    public string Artwork { get; set; }
 
     [JsonPropertyName("lastUpdateTime")]
     public long LastUpdateTime { get; set; }

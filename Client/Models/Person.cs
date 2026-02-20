@@ -19,10 +19,10 @@ internal sealed class Person
     public string Group { get; set; }
 
     [JsonPropertyName("href")]
-    public Uri Href { get; set; }
+    public string Href { get; set; }
 
     [JsonPropertyName("img")]
-    public Uri Img { get; set; }
+    public string Img { get; set; }
 }
 
 #pragma warning restore CS8618

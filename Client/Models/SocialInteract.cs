@@ -7,7 +7,7 @@ namespace Client.Models;
 internal sealed class SocialInteract
 {
     [JsonPropertyName("url")]
-    public Uri Url { get; set; }
+    public string Url { get; set; }
 
     [JsonPropertyName("protocol")]
     public string Protocol { get; set; }
@@ -16,7 +16,7 @@ internal sealed class SocialInteract
     public string AccountId { get; set; }
 
     [JsonPropertyName("accountUrl")]
-    public Uri AccountUrl { get; set; }
+    public string AccountUrl { get; set; }
 
     [JsonPropertyName("priority")]
     public long Priority { get; set; }

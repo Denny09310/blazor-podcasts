@@ -7,7 +7,7 @@ namespace Client.Models;
 internal sealed class Transcript
 {
     [JsonPropertyName("url")]
-    public Uri Url { get; set; }
+    public string Url { get; set; }
 
     [JsonPropertyName("type")]
     public string Type { get; set; }

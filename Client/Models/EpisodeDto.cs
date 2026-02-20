@@ -11,7 +11,7 @@ internal sealed class EpisodeDto : EpisodeBase
     public long Duration { get; set; }
     
     [JsonPropertyName("feedUrl")]
-    public Uri FeedUrl { get; set; }
+    public string FeedUrl { get; set; }
 
     [JsonPropertyName("podcastGuid")]
     public Guid PodcastGuid { get; set; }
@@ -20,10 +20,10 @@ internal sealed class EpisodeDto : EpisodeBase
     public long? FeedDuplicateOf { get; set; }
 
     [JsonPropertyName("chaptersUrl")]
-    public Uri ChaptersUrl { get; set; }
+    public string ChaptersUrl { get; set; }
 
     [JsonPropertyName("transcriptUrl")]
-    public Uri TranscriptUrl { get; set; }
+    public string TranscriptUrl { get; set; }
 
     [JsonPropertyName("transcripts")]
     public List<Transcript> Transcripts { get; set; }

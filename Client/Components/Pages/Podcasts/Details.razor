@@ -96,7 +96,7 @@
                             <div class="flex items-center gap-4">
 
                                 <img class="size-12 shrink-0 rounded object-cover"
-                                     src="@(episode.Image ?? podcast.Image)"
+                                     src="@(!string.IsNullOrEmpty(episode.Image) ? episode.Image : podcast.Image)"
                                      alt="@(episode.Title)'s image" />
 
                                 <div class="min-w-0 flex-1 space-y-1">

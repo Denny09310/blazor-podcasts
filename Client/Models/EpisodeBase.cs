@@ -14,7 +14,7 @@ internal abstract partial class EpisodeBase
     public string Title { get; set; }
 
     [JsonPropertyName("link")]
-    public Uri Link { get; set; }
+    public string Link { get; set; }
 
     [JsonPropertyName("description")]
     public string Description { get; set; }
@@ -29,7 +29,7 @@ internal abstract partial class EpisodeBase
     public long DateCrawledUnix { get; set; }
 
     [JsonPropertyName("enclosureUrl")]
-    public Uri EnclosureUrl { get; set; }
+    public string EnclosureUrl { get; set; }
 
     [JsonPropertyName("enclosureType")]
     public string EnclosureType { get; set; }
@@ -51,13 +51,13 @@ internal abstract partial class EpisodeBase
     public long Season { get; set; }
 
     [JsonPropertyName("image")]
-    public Uri Image { get; set; }
+    public string Image { get; set; }
 
     [JsonPropertyName("feedItunesId")]
     public long? FeedItunesId { get; set; }
 
     [JsonPropertyName("feedImage")]
-    public Uri FeedImage { get; set; }
+    public string FeedImage { get; set; }
 
     [JsonPropertyName("feedId")]
     public long FeedId { get; set; }
