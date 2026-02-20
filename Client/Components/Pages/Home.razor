@@ -1,6 +1,6 @@
 ﻿@page "/"
+
 @inject PodcastIndexClient Client
-@inject NavigationManager Nav
 
 <header class="sticky top-0 z-50 flex items-center gap-4 bg-white py-3 ps-4 dark:bg-black">
 
@@ -61,7 +61,7 @@
             @foreach (var item in bycategory.Searches)
             {
                 <a @key="item.Id"
-                   href="@($"/podcast/{item.Id}")"
+                   href="@($"/podcasts/{item.Id}")"
                    class="flex items-center gap-x-3 rounded bg-neutral-500/10 p-2 transition hover:bg-neutral-500/20">
 
                     <img class="size-12 rounded object-cover"
@@ -73,7 +73,7 @@
                             @item.Title
                         </h3>
                         <p class="truncate text-xs opacity-75">
-                            @GetHtmlTags().Replace(item.Description, "")
+                            @Regexes.GetHtmlTags().Replace(item.Description, "")
                         </p>
                     </div>
 
@@ -107,7 +107,7 @@
                 @foreach (var item in trending.Searches)
                 {
                     <a @key="item.Id"
-                       href="@($"/podcast/{item.Id}")"
+                       href="@($"/podcasts/{item.Id}")"
                        class="w-24 shrink-0 space-y-2">
 
                         <img class="size-24 rounded-md object-cover"
@@ -248,11 +248,9 @@
             loading = true;
             error = null;
 
-            bycategory = await Client.Podcasts.TrendingAsync(new TrendingRequest
-            {
-                Max = 6,
-                Cat = Selected
-            }, cts.Token);
+            bycategory = await Client.Podcasts.TrendingAsync(
+                request: new TrendingRequest { Max = 6, Cat = Selected },
+                ct: cts.Token);
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)

@@ -1,0 +1,175 @@
+﻿@page "/podcasts/{id:int}"
+
+@inject PodcastIndexClient Client
+
+<header class="sticky top-0 z-50 flex items-center gap-4 bg-white py-3 ps-4 dark:bg-black">
+
+    <button class="rounded-full p-2 transition hover:bg-neutral-200 dark:hover:bg-neutral-800" onclick="history.back()">
+        <Blazicon Svg="Lucide.ArrowLeft" class="size-5!" />
+    </button>
+
+    <h1 class="truncate text-sm font-semibold">
+        @podcast?.Title
+    </h1>
+
+</header>
+
+<main class="space-y-8 p-4">
+
+    @if (loading)
+    {
+        <!-- HERO SKELETON -->
+        <div class="animate-pulse space-y-4">
+
+            <div class="aspect-square w-full rounded-xl bg-neutral-300 dark:bg-neutral-700"></div>
+
+            <div class="space-y-2">
+                <div class="h-4 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+            </div>
+
+            <div class="space-y-2">
+                <div class="h-3 w-full rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                <div class="h-3 w-5/6 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                <div class="h-3 w-2/3 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+            </div>
+        </div>
+
+        <!-- EPISODE SKELETONS -->
+        @for (int i = 0; i < 5; i++)
+        {
+            <div class="animate-pulse space-y-3">
+                <div class="flex items-center gap-4">
+                    <div class="size-12 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                    <div class="flex-1 space-y-2">
+                        <div class="h-3 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                        <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else if (podcast is not null)
+    {
+        <!-- HERO -->
+        <section class="space-y-5">
+
+            <img class="aspect-square w-full rounded-xl object-cover"
+                 src="@podcast.Image"
+                 alt="@(podcast.Title)'s image" />
+
+            <div class="space-y-2">
+                <h2 class="text-xl font-bold tracking-tight">
+                    @podcast.Title
+                </h2>
+
+                <p class="text-sm opacity-75">
+                    @podcast.Author
+                </p>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(podcast.Description))
+            {
+                <p class="text-sm leading-relaxed opacity-80">
+                    @Regexes.GetHtmlTags().Replace(podcast.Description, "")
+                </p>
+            }
+
+        </section>
+
+        <!-- EPISODES -->
+        <section class="space-y-4">
+
+            <h3 class="text-lg font-bold tracking-tight">
+                Episodes
+            </h3>
+
+            @if (episodes?.Any() == true)
+            {
+                <div class="flex flex-col gap-6">
+
+                    @foreach (var episode in episodes)
+                    {
+                        <div @key="episode.Id"
+                             class="space-y-3 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+
+                            <div class="flex items-center gap-4">
+
+                                <img class="size-12 shrink-0 rounded object-cover"
+                                     src="@(episode.Image ?? podcast.Image)"
+                                     alt="@(episode.Title)'s image" />
+
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h4 class="truncate text-sm font-semibold">
+                                        @episode.Title
+                                    </h4>
+                                    <p class="truncate text-xs opacity-75">
+                                        @episode.DatePublished.ToString("d")
+                                    </p>
+                                </div>
+
+                                <button class="rounded-full p-2 transition hover:bg-neutral-200 dark:hover:bg-neutral-800">
+                                    <Blazicon Svg="Lucide.Play" class="size-5!" />
+                                </button>
+
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(episode.Description))
+                            {
+                                <p class="line-clamp-3 text-xs leading-relaxed opacity-75">
+                                    @Regexes.GetHtmlTags().Replace(episode.Description, "")
+                                </p>
+                            }
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <p class="text-sm opacity-60">
+                    No episodes found.
+                </p>
+            }
+
+        </section>
+    }
+    else
+    {
+        <p class="text-sm text-red-500">
+            Unable to load podcast.
+        </p>
+    }
+
+</main>
+
+@code
+{
+    [Parameter] public int Id { get; set; }
+
+    private PodcastDto? podcast;
+    private List<EpisodeDto> episodes = [];
+
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+
+            var task1 = Client.Podcasts.ByFeedIdAsync(Id);
+            var task2 = Client.Episodes.ByFeedIdAsync(Id);
+
+            await Task.WhenAll(task1, task2);
+
+            podcast = task1.Result.Value;
+            episodes = task2.Result.Items;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+}
