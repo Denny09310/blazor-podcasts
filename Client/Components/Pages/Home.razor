@@ -1,0 +1,288 @@
+﻿@page "/"
+@using Markdig
+@inject PodcastIndexClient Client
+@inject NavigationManager Nav
+
+<header class="sticky top-0 z-50 flex items-center gap-4 bg-white py-3 ps-4 dark:bg-black">
+
+    <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-sm font-semibold text-white">
+        D
+    </div>
+
+    @if (categories?.Categories?.Any() == true)
+    {
+        <div class="no-scrollbar flex flex-1 gap-2 overflow-x-auto rounded-s-full">
+
+            @foreach (var category in categories.Categories)
+            {
+                var selected = this.selected.Contains(category.Id);
+                var classes = selected
+                ? "bg-neutral-900 text-white"
+                : "bg-neutral-100 text-neutral-700 active:scale-95";
+
+                <button @key="category.Id"
+                        class="shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all @classes"
+                        @onclick="@(() => ToggleAsync(category.Id))">
+                    @category.Name
+                </button>
+            }
+
+        </div>
+    }
+
+</header>
+
+<main class="space-y-8 p-3">
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <div class="rounded bg-red-500/10 p-3 text-sm text-red-600">
+            @error
+        </div>
+    }
+
+    @if (loading)
+    {
+        <div class="grid grid-cols-2 gap-3">
+            @for (int i = 0; i < 6; i++)
+            {
+                <div class="flex animate-pulse gap-x-2 rounded bg-neutral-100 p-2 dark:bg-neutral-800">
+                    <div class="size-12 shrink-0 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                    <div class="flex-1 space-y-1">
+                        <div class="h-3 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                        <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (bycategory?.Searches?.Any() == true)
+    {
+        <div class="grid grid-cols-2 gap-3">
+            @foreach (var item in bycategory.Searches)
+            {
+                <a @key="item.Id"
+                   href="@($"/podcast/{item.Id}")"
+                   class="flex items-center gap-x-3 rounded bg-neutral-500/10 p-2 transition hover:bg-neutral-500/20">
+
+                    <img class="size-12 rounded object-cover"
+                         src="@item.Image"
+                         alt="@(item.Title)'s image" />
+
+                    <div class="min-w-0 flex-1 space-y-1">
+                        <h3 class="truncate text-sm font-semibold">
+                            @item.Title
+                        </h3>
+                        <p class="truncate text-xs opacity-75">
+                            @Markdown.ToPlainText(item.Description)
+                        </p>
+                    </div>
+
+                </a>
+            }
+        </div>
+    }
+
+    <section id="trending-from-monday" class="space-y-3">
+
+        <h2 class="text-lg font-bold tracking-tight">
+            Trending from Monday
+        </h2>
+
+        @if (trending == null)
+        {
+            <div class="no-scrollbar flex gap-3 overflow-x-auto">
+                @for (int i = 0; i < 6; i++)
+                {
+                    <div class="w-24 shrink-0 animate-pulse space-y-2">
+                        <div class="size-24 rounded-md bg-neutral-300 dark:bg-neutral-700"></div>
+                        <div class="h-3 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                        <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-scrollbar flex gap-3 overflow-x-auto">
+                @foreach (var item in trending.Searches)
+                {
+                    <a @key="item.Id"
+                       href="@($"/podcast/{item.Id}")"
+                       class="w-24 shrink-0 space-y-2">
+
+                        <img class="size-24 rounded-md object-cover"
+                             src="@item.Image"
+                             alt="@(item.Title)'s image" />
+
+                        <div class="space-y-1">
+                            <h3 class="truncate text-sm font-semibold">
+                                @item.Title
+                            </h3>
+                            <p class="truncate text-xs opacity-75">
+                                @item.Author
+                            </p>
+                        </div>
+
+                    </a>
+                }
+            </div>
+        }
+
+    </section>
+
+    <!-- RANDOM EPISODES -->
+    <section id="random-podcast-episodes" class="space-y-4">
+
+        <h2 class="text-lg font-bold tracking-tight">
+            Discover Episodes
+        </h2>
+
+        @if (episodes == null)
+        {
+            @for (int i = 0; i < 2; i++)
+            {
+                <div class="animate-pulse space-y-3">
+                    <div class="flex items-center gap-4">
+                        <div class="size-12 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-3 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                            <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                        </div>
+                    </div>
+                    <div class="aspect-video rounded-md bg-neutral-300 dark:bg-neutral-700"></div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="flex flex-col gap-6">
+                @foreach (var item in episodes.Episodes)
+                {
+                    <div @key="item.Id" class="space-y-3">
+
+                        <div class="flex items-center gap-4">
+
+                            <img class="size-12 shrink-0 rounded object-cover"
+                                 src="@item.Image"
+                                 alt="@(item.Title)'s image" />
+
+                            <div class="min-w-0 flex-1 space-y-1">
+                                <h3 class="truncate text-sm font-semibold">
+                                    @item.Title
+                                </h3>
+                                <p class="truncate text-xs opacity-75">
+                                    @item.FeedTitle
+                                </p>
+                            </div>
+
+                            <button type="button"
+                                    class="rounded-full p-2 transition hover:bg-neutral-500/20">
+                                <Blazicon Svg="Lucide.EllipsisVertical" class="size-5!" />
+                            </button>
+
+                        </div>
+
+                        <img class="aspect-video rounded-md object-cover"
+                             src="@item.Image"
+                             alt="@(item.Title)'s image" />
+
+                    </div>
+                }
+            </div>
+        }
+
+    </section>
+
+</main>
+
+@code
+{
+    private SearchResponse? bycategory, trending;
+    private CategoriesResponse? categories;
+    private RandomEpisodesResponse? episodes;
+
+    private bool loading = true;
+    private string? error;
+
+    private HashSet<long> selected = [];
+    private CancellationTokenSource? cts;
+
+    private string[] Selected =>
+        categories?.Categories
+            .Where(c => selected.Contains(c.Id))
+            .Select(c => c.Name)
+            .ToArray() ?? [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var task1 = Client.Categories.ListAsync();
+            var task2 = Client.Podcasts.TrendingAsync(new TrendingRequest
+            {
+                Max = 12,
+                Since = GetLastMonday(),
+            });
+            var task3 = Client.Episodes.RandomAsync(new RandomEpisodesRequest { Max = 2 });
+
+            await Task.WhenAll(task1, task2, task3);
+
+            categories = task1.Result;
+            trending = task2.Result;
+            episodes = task3.Result;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+
+        await PopulateAsync();
+    }
+
+    private async Task PopulateAsync()
+    {
+        try
+        {
+            cts?.Cancel();
+            cts = new CancellationTokenSource();
+
+            loading = true;
+            error = null;
+
+            bycategory = await Client.Podcasts.TrendingAsync(new TrendingRequest
+            {
+                Max = 6,
+                Cat = Selected
+            }, cts.Token);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task ToggleAsync(long categoryId)
+    {
+        if (!selected.Add(categoryId))
+            selected.Remove(categoryId);
+
+        await PopulateAsync();
+    }
+
+    public static DateTime GetLastMonday(bool includeToday = true)
+    {
+        DateTime today = DateTime.Now;
+        int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+
+        if (!includeToday && diff == 0)
+            diff = 7;
+
+        return today.AddDays(-diff).Date;
+    }
+}

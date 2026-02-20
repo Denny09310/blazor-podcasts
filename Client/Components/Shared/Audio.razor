@@ -1,0 +1,103 @@
+﻿@implements IAsyncDisposable
+
+@inject IJSRuntime JS
+
+<audio @attributes="AdditionalAttributes" @ref="_element"></audio>
+
+@code
+{
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public EventCallback OnPlay { get; set; }
+    [Parameter] public EventCallback OnPause { get; set; }
+    [Parameter] public EventCallback OnEnded { get; set; }
+    [Parameter] public EventCallback<double> OnTimeUpdate { get; set; }
+    [Parameter] public EventCallback OnLoadedMetadata { get; set; }
+    [Parameter] public EventCallback OnCanPlay { get; set; }
+    [Parameter] public EventCallback OnCanPlayThrough { get; set; }
+    [Parameter] public EventCallback OnSeeking { get; set; }
+    [Parameter] public EventCallback OnSeeked { get; set; }
+    [Parameter] public EventCallback OnVolumeChange { get; set; }
+    [Parameter] public EventCallback OnError { get; set; }
+    [Parameter] public EventCallback OnWaiting { get; set; }
+    [Parameter] public EventCallback OnStalled { get; set; }
+    [Parameter] public EventCallback OnRateChange { get; set; }
+    [Parameter] public EventCallback OnDurationChange { get; set; }
+
+    private ElementReference _element;
+    private IJSObjectReference? _reference;
+    private DotNetObjectReference<Audio>? _instance;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        await using var module = await JS.InvokeAsync<IJSObjectReference>(
+            "import",
+            "./Components/Shared/Audio.razor.js");
+
+        _instance = DotNetObjectReference.Create(this);
+        _reference = await module.InvokeAsync<IJSObjectReference>("initialize", _element, _instance);
+    }
+
+    public async ValueTask PlayAsync()
+        => await _reference!.InvokeVoidAsync("play");
+
+    public async ValueTask PauseAsync()
+        => await _reference!.InvokeVoidAsync("pause");
+
+    public async ValueTask SetVolumeAsync(double volume)
+        => await _reference!.InvokeVoidAsync("setVolume", volume);
+
+    public ValueTask<double> GetDurationAsync() =>
+        _reference!.InvokeAsync<double>("getDuration");
+
+    public async ValueTask<double> GetCurrentTimeAsync()
+        => await _reference!.InvokeAsync<double>("getCurrentTime");
+
+    public async ValueTask SetCurrentTimeAsync(double seconds)
+        => await _reference!.InvokeVoidAsync("setCurrentTime", seconds);
+
+    public async ValueTask StopAsync()
+    {
+        await PauseAsync();
+        await SetCurrentTimeAsync(0);
+    }
+
+    [JSInvokable] public Task HandlePlay() => OnPlay.InvokeAsync();
+    [JSInvokable] public Task HandlePause() => OnPause.InvokeAsync();
+    [JSInvokable] public Task HandleEnded() => OnEnded.InvokeAsync();
+    [JSInvokable] public Task HandleTimeUpdate(double time) => OnTimeUpdate.InvokeAsync(time);
+    [JSInvokable] public Task HandleLoadedMetadata() => OnLoadedMetadata.InvokeAsync();
+    [JSInvokable] public Task HandleCanPlay() => OnCanPlay.InvokeAsync();
+    [JSInvokable] public Task HandleCanPlayThrough() => OnCanPlayThrough.InvokeAsync();
+    [JSInvokable] public Task HandleSeeking() => OnSeeking.InvokeAsync();
+    [JSInvokable] public Task HandleSeeked() => OnSeeked.InvokeAsync();
+    [JSInvokable] public Task HandleVolumeChange() => OnVolumeChange.InvokeAsync();
+    [JSInvokable] public Task HandleError() => OnError.InvokeAsync();
+    [JSInvokable] public Task HandleWaiting() => OnWaiting.InvokeAsync();
+    [JSInvokable] public Task HandleStalled() => OnStalled.InvokeAsync();
+    [JSInvokable] public Task HandleRateChange() => OnRateChange.InvokeAsync();
+    [JSInvokable] public Task HandleDurationChange() => OnDurationChange.InvokeAsync();
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (_reference is not null)
+            {
+                await _reference.InvokeVoidAsync("dispose");
+                await _reference.DisposeAsync();
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // expected.
+        }
+
+        _instance?.Dispose();
+
+        GC.SuppressFinalize(this);
+    }
+}

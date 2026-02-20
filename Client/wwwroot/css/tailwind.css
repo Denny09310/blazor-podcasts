@@ -1,0 +1,11 @@
+﻿@import "tailwindcss";
+
+@utility no-scrollbar {
+    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
+
+@layer base {
+    body {
+        @apply overscroll-x-none bg-white text-black antialiased dark:bg-black dark:text-white;
+    }
+}
