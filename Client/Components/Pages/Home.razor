@@ -1,5 +1,4 @@
 ﻿@page "/"
-@using Markdig
 @inject PodcastIndexClient Client
 @inject NavigationManager Nav
 
@@ -74,7 +73,7 @@
                             @item.Title
                         </h3>
                         <p class="truncate text-xs opacity-75">
-                            @Markdown.ToPlainText(item.Description)
+                            @GetHtmlTags().Replace(item.Description, "")
                         </p>
                     </div>
 
@@ -176,8 +175,7 @@
                                 </p>
                             </div>
 
-                            <button type="button"
-                                    class="rounded-full p-2 transition hover:bg-neutral-500/20">
+                            <button type="button" class="rounded-full p-2 transition hover:bg-neutral-500/20">
                                 <Blazicon Svg="Lucide.EllipsisVertical" class="size-5!" />
                             </button>
 
@@ -285,4 +283,6 @@
 
         return today.AddDays(-diff).Date;
     }
+
+   
 }
