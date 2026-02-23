@@ -1,0 +1,33 @@
+﻿<div class="space-y-3">
+
+    <div class="flex items-center gap-4">
+
+        <img class="size-12 shrink-0 rounded object-cover"
+             src="@Item.Image"
+             alt="@(Item.Title)'s image" />
+
+        <div class="min-w-0 flex-1 space-y-1">
+            <h3 class="truncate text-sm font-semibold">
+                @Item.Title
+            </h3>
+            <p class="truncate text-xs opacity-75">
+                @Item.FeedTitle
+            </p>
+        </div>
+
+        <BbButton Variant="ButtonVariant.Ghost" Size="ButtonSize.Icon" Class="rounded-full">
+            <LucideIcon Name="ellipsis-vertical" />
+        </BbButton>
+
+    </div>
+
+    <img class="aspect-video rounded-md object-cover"
+         src="@Item.Image"
+         alt="@(Item.Title)'s image" />
+
+</div>
+
+@code 
+{
+    [Parameter, EditorRequired] public RandomEpisode Item { get; set; } = default!;
+}

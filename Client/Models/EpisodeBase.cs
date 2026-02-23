@@ -5,7 +5,7 @@ namespace Models;
 
 #pragma warning disable CS8618
 
-internal abstract partial class EpisodeBase
+public abstract partial class EpisodeBase
 {
     [JsonPropertyName("id")]
     public long Id { get; set; }
@@ -69,7 +69,7 @@ internal abstract partial class EpisodeBase
     public long FeedDead { get; set; }
 }
 
-internal abstract partial class EpisodeBase
+public abstract partial class EpisodeBase
 {
     [JsonIgnore]
     public DateTimeOffset DatePublished => DateTimeOffset.FromUnixTimeSeconds(DatePublishedUnix);

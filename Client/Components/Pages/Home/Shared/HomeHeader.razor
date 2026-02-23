@@ -1,0 +1,18 @@
+﻿<HeaderContent Class="px-3 ps-4">
+
+    <BbAvatar>
+        <BbAvatarFallback Class="bg-primary">D</BbAvatarFallback>
+    </BbAvatar>
+
+    <CategorySelector Categories="@Categories"
+                      Selected="@Selected"
+                      OnToggle="@OnToggle" />
+
+</HeaderContent>
+
+@code 
+{
+    [Parameter] public CategoriesResponse? Categories { get; set; }
+    [Parameter] public HashSet<long> Selected { get; set; } = [];
+    [Parameter] public EventCallback<long> OnToggle { get; set; }
+}

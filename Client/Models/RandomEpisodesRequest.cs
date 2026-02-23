@@ -5,7 +5,7 @@
 
 #pragma warning disable CS8618
 
-internal sealed class RandomEpisodesRequest : BaseRequest
+public sealed class RandomEpisodesRequest : BaseRequest
 {
 }
 

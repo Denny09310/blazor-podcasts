@@ -1,0 +1,30 @@
+<section class="space-y-4">
+
+    <img class="aspect-square w-full rounded-xl object-cover"
+         src="@Podcast.Image"
+         alt="@(Podcast.Title)'s image" />
+
+    <div class="space-y-2">
+        <h2 class="text-xl font-bold tracking-tight">
+            @Podcast.Title
+        </h2>
+
+        <p class="text-muted-foreground text-sm">
+            @Podcast.Author
+        </p>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Podcast.Description))
+    {
+        <p class="text-muted-foreground text-sm leading-relaxed">
+            @Regexes.GetHtmlTags().Replace(Podcast.Description, "")
+        </p>
+    }
+
+</section>
+
+@code 
+{
+    [Parameter, EditorRequired]
+    public Podcast Podcast { get; set; } = default!;
+}

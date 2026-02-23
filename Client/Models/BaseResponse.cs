@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal class BaseResponse
+public class BaseResponse
 {
     [JsonPropertyName("status")]
     [JsonConverter(typeof(BooleanConverter))]

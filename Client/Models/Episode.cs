@@ -5,7 +5,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class EpisodeDto : EpisodeBase
+public sealed class Episode : EpisodeBase
 {
     [JsonPropertyName("duration")]
     public long Duration { get; set; }

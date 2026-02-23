@@ -23,7 +23,7 @@ public sealed class Query
     public static implicit operator Query(Dictionary<string, JsonElement> values) => new(values);
 }
 
-internal sealed class QueryConverter : JsonConverter<Query>
+public sealed class QueryConverter : JsonConverter<Query>
 {
     public override Query Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

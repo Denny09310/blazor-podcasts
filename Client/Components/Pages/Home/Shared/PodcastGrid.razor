@@ -1,0 +1,21 @@
+﻿@using Client.Components.Pages.Home.Shared.Skeletons
+
+@if (Loading)
+{
+    <PodcastGridSkeleton />
+}
+else if (Items?.Any() == true)
+{
+    <div class="grid grid-cols-2 gap-3">
+        @foreach (var item in Items)
+        {
+            <PodcastCard @key="item.Id" Item="@item" />
+        }
+    </div>
+}
+
+@code 
+{
+    [Parameter] public IEnumerable<PodcastSummary>? Items { get; set; }
+    [Parameter] public bool Loading { get; set; }
+}

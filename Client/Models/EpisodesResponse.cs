@@ -4,10 +4,10 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class EpisodesResponse : BaseResponse
+public sealed class EpisodesResponse : BaseResponse
 {
     [JsonPropertyName("items")]
-    public List<EpisodeDto> Items { get; set; }
+    public List<Episode> Items { get; set; }
 }
 
 #pragma warning restore CS8618

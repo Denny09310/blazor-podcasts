@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class Destination
+public sealed class Destination
 {
     [JsonPropertyName("name")]
     public string Name { get; set; }

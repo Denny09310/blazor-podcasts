@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class Soundbite
+public sealed class Soundbite
 {
     [JsonPropertyName("startTime")]
     public long StartTime { get; set; }

@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class PodcastDto : Feed
+public sealed class Podcast : Feed
 {
     [JsonPropertyName("itunesType")]
     public string ItunesType { get; set; }

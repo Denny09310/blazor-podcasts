@@ -1,137 +1,25 @@
-﻿@page "/podcasts/{id:int}"
+﻿@page "/podcasts/{Id:int}"
+@using Client.Components.Pages.Podcasts.Shared
+@using Client.Components.Pages.Podcasts.Shared.Skeletons
 
 @inject PodcastIndexClient Client
 @inject ToastService Toast
 
-<HeaderContent>
-
-    <button class="rounded-full p-2 transition hover:bg-muted" onclick="history.back()">
-        <LucideIcon Name="arrow-left" />
-    </button>
-
-    <h1 class="truncate text-sm font-semibold">
-        @podcast?.Title
-    </h1>
-
-</HeaderContent>
+<PodcastHeader Title="podcast?.Title" />
 
 <div class="space-y-8">
 
     @if (loading)
     {
-        <div class="animate-pulse space-y-4">
-
-            <div class="aspect-square w-full rounded-xl bg-muted"></div>
-
-            <div class="space-y-2">
-                <div class="h-4 w-3/4 rounded bg-muted"></div>
-                <div class="h-3 w-1/2 rounded bg-muted"></div>
-            </div>
-
-            <div class="space-y-2">
-                <div class="h-3 w-full rounded bg-muted"></div>
-                <div class="h-3 w-5/6 rounded bg-muted"></div>
-                <div class="h-3 w-2/3 rounded bg-muted"></div>
-            </div>
-        </div>
-
-        <div class="flex flex-col gap-4">
-            @for (int i = 0; i < 5; i++)
-            {
-                <div class="animate-pulse space-y-3 bg-muted-light p-3">
-                    <div class="flex items-center gap-2">
-                        <div class="size-12 rounded bg-muted"></div>
-                        <div class="flex-1 space-y-2">
-                            <div class="h-3 w-3/4 rounded bg-muted"></div>
-                            <div class="h-3 w-1/2 rounded bg-muted"></div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+        <PodcastDetailsSkeleton />
+        <EpisodeListSkeleton />
     }
     else if (podcast is not null)
     {
-        <section class="space-y-4">
+        <PodcastDetailsSection Podcast="@podcast" />
 
-            <img class="aspect-square w-full rounded-xl object-cover"
-                 src="@podcast.Image"
-                 alt="@(podcast.Title)'s image" />
-
-            <div class="space-y-2">
-                <h2 class="text-xl font-bold tracking-tight">
-                    @podcast.Title
-                </h2>
-
-                <p class="text-muted-foreground text-sm">
-                    @podcast.Author
-                </p>
-            </div>
-
-            @if (!string.IsNullOrWhiteSpace(podcast.Description))
-            {
-                <p class="text-muted-foreground text-sm leading-relaxed">
-                    @Regexes.GetHtmlTags().Replace(podcast.Description, "")
-                </p>
-            }
-
-        </section>
-
-        <section class="space-y-4">
-
-            <h3 class="text-lg font-bold tracking-tight">
-                Episodes
-            </h3>
-
-            @if (episodes?.Any() == true)
-            {
-                <div class="flex flex-col gap-4">
-
-                    @foreach (var episode in episodes)
-                    {
-                        <div @key="episode.Id" class="space-y-3 rounded-lg border border-border bg-card p-3">
-
-                            <div class="flex items-center gap-4">
-
-                                <img class="size-12 shrink-0 rounded object-cover"
-                                     src="@(!string.IsNullOrEmpty(episode.Image) ? episode.Image : podcast.Image)"
-                                     alt="@(episode.Title)'s image" />
-
-                                <div class="min-w-0 flex-1 space-y-1">
-                                    <h4 class="truncate text-sm font-semibold">
-                                        @episode.Title
-                                    </h4>
-                                    <p class="text-muted-foreground truncate text-xs">
-                                        @episode.DatePublished.ToString("D")
-                                    </p>
-                                </div>
-
-                                <BbButton Size="ButtonSize.Icon" Class="rounded-full">
-                                    <LucideIcon Name="play" />
-                                </BbButton>
-
-                            </div>
-
-                            @if (!string.IsNullOrWhiteSpace(episode.Description))
-                            {
-                                <p class="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
-                                    @Regexes.GetHtmlTags().Replace(episode.Description, "")
-                                </p>
-                            }
-
-                        </div>
-                    }
-
-                </div>
-            }
-            else
-            {
-                <p class="text-muted-foreground text-sm">
-                    No episodes found.
-                </p>
-            }
-
-        </section>
+        <EpisodeListSection Image="@podcast.Image"
+                            Episodes="@episodes" />
     }
 
 </div>
@@ -140,8 +28,8 @@
 {
     [Parameter] public int Id { get; set; }
 
-    private PodcastDto? podcast;
-    private List<EpisodeDto> episodes = [];
+    private Podcast? podcast;
+    private List<Episode> episodes = [];
 
     private bool loading = true;
 

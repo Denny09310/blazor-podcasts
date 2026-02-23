@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal class Feed
+public class Feed
 {
     [JsonPropertyName("id")]
     public long Id { get; set; }

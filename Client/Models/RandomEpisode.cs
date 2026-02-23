@@ -5,7 +5,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class RandomEpisodeDto : EpisodeBase
+public sealed class RandomEpisode : EpisodeBase
 {
     [JsonPropertyName("feedTitle")]
     public string FeedTitle { get; set; }

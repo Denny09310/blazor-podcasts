@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class TrendingRequest : BaseRequest
+public sealed class TrendingRequest : BaseRequest
 {
     public string[] Cat { get; set; }
 

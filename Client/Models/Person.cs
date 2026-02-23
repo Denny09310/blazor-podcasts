@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class Person
+public sealed class Person
 {
     [JsonPropertyName("id")]
     public long Id { get; set; }

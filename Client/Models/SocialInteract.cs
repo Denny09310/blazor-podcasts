@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class SocialInteract
+public sealed class SocialInteract
 {
     [JsonPropertyName("url")]
     public string Url { get; set; }

@@ -1,0 +1,45 @@
+﻿@using Client.Components.Pages.Home.Shared.Skeletons
+
+<section class="space-y-3">
+
+    <h2 class="text-lg font-bold tracking-tight text-foreground">
+        Trending from Monday
+    </h2>
+
+    @if (Items is null)
+    {
+        <TrendingSkeleton />
+    }
+    else
+    {
+        <div class="no-scrollbar flex gap-3 overflow-x-auto">
+            @foreach (var item in Items)
+            {
+                <a @key="item.Id"
+                   href="@($"/podcasts/{item.Id}")"
+                   class="w-24 shrink-0 space-y-2">
+
+                    <img class="size-24 rounded-md object-cover"
+                         src="@item.Image"
+                         alt="@(item.Title)'s image" />
+
+                    <div class="space-y-1">
+                        <h3 class="truncate text-sm font-semibold">
+                            @item.Title
+                        </h3>
+                        <p class="truncate text-xs opacity-75">
+                            @item.Author
+                        </p>
+                    </div>
+
+                </a>
+            }
+        </div>
+    }
+
+</section>
+
+@code 
+{
+    [Parameter] public IEnumerable<PodcastSummary>? Items { get; set; }
+}

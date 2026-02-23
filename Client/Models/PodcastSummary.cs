@@ -1,6 +1,6 @@
 ﻿namespace Client.Models;
 
-internal sealed class PodcastSummary : Feed
+public sealed class PodcastSummary : Feed
 {
 
 }

@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal sealed class Transcript
+public sealed class Transcript
 {
     [JsonPropertyName("url")]
     public string Url { get; set; }
