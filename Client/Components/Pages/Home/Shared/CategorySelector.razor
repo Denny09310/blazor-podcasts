@@ -1,28 +1,45 @@
-﻿<div class="no-scrollbar flex flex-1 gap-2 overflow-x-auto rounded-s-full">
+﻿@using Client.Components.Pages.Home.Shared.Skeletons
 
-    @foreach (var category in Categories)
-    {
-        var classes = Selected.Contains(category.Name)
-        ? "bg-muted text-muted-foreground"
-        : "bg-muted-light text-muted-foreground active:scale-95";
+@inject PodcastIndexClient Client
 
-        <button @key="category.Id"
-                class="shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all @classes"
-                @onclick="() => OnToggle.InvokeAsync(category.Name)">
-            @category.Name
-        </button>
-    }
+<Loadable Loader="LoadCategoriesAsync">
 
-</div>
+    <Loading>
+        <CategorySkeleton />
+    </Loading>
 
-@code 
+    <ChildContent Context="categories">
+        <div class="no-scrollbar flex flex-1 gap-2 overflow-x-auto rounded-s-full">
+
+            @foreach (var category in categories)
+            {
+                var classes = Selected.Contains(category.Name)
+                ? "bg-muted text-muted-foreground"
+                : "bg-muted-light text-muted-foreground active:scale-95";
+
+                <button @key="category.Id"
+                        class="shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all @classes"
+                        @onclick="() => OnToggle.InvokeAsync(category.Name)">
+                    @category.Name
+                </button>
+            }
+
+        </div>
+    </ChildContent>
+
+</Loadable>
+
+@code
 {
-    [Parameter, EditorRequired] 
-    public IEnumerable<Category> Categories { get; set; }
-
-    [Parameter] 
+    [Parameter]
     public HashSet<string> Selected { get; set; } = [];
-    
+
     [Parameter]
     public EventCallback<string> OnToggle { get; set; }
+
+    private async Task<IEnumerable<Category>> LoadCategoriesAsync(CancellationToken ct)
+    {
+        var response = await Client.Categories.ListAsync(ct);
+        return response.Categories;
+    }
 }

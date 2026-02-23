@@ -20,9 +20,11 @@
 
     private string[] Categories => _selected.ToArray();
 
-    private void Toggle(string categoryName)
+    private void Toggle(string name)
     {
-        if (!_selected.Add(categoryName))
-            _selected.Remove(categoryName);
+        if (!_selected.Add(name))
+        {
+            _selected.Remove(name);
+        }
     }
 }

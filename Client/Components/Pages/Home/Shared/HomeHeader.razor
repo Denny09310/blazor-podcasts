@@ -1,5 +1,4 @@
 ﻿@using Client.Components.Pages.Home.Shared.Skeletons
-@inject PodcastIndexClient Client
 
 <HeaderContent Class="px-3 ps-4">
 
@@ -7,19 +6,7 @@
         <BbAvatarFallback Class="bg-primary">D</BbAvatarFallback>
     </BbAvatar>
 
-    <Loadable Loader="LoadCategoriesAsync">
-
-        <Loading>
-            <CategorySkeleton />
-        </Loading>
-
-        <ChildContent Context="categories">
-            <CategorySelector Categories="@categories"
-                              Selected="@Selected"
-                              OnToggle="@OnToggle" />
-        </ChildContent>
-
-    </Loadable>
+    <CategorySelector Selected="@Selected" OnToggle="@OnToggle" />
 
 </HeaderContent>
 
@@ -27,10 +14,4 @@
 {
     [Parameter] public HashSet<string> Selected { get; set; } = [];
     [Parameter] public EventCallback<string> OnToggle { get; set; }
-
-    private async Task<IEnumerable<Category>> LoadCategoriesAsync(CancellationToken ct)
-    {
-        var response = await Client.Categories.ListAsync(ct);
-        return response.Categories;
-    }
 }
