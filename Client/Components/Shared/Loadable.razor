@@ -36,17 +36,15 @@ else if (_data is not null)
 
     private TItem? _data;
     private object? _previous;
-    private bool _loading, _loaded, _error;
+    private bool _loading, _error;
 
     private CancellationTokenSource? _cts;
 
     protected override async Task OnParametersSetAsync()
     {
-        if (!_loaded || !AreEqual(_previous, Key))
+        if (_cts is null || !Equals(_previous, Key))
         {
-            _loaded = true;
             _previous = Key;
-
             await LoadAsync();
         }
     }
@@ -86,16 +84,5 @@ else if (_data is not null)
     {
         _cts?.Cancel();
         _cts?.Dispose();
-    }
-
-    private static bool AreEqual(object? a, object? b)
-    {
-        if (ReferenceEquals(a, b))
-            return true;
-
-        if (a is IEnumerable<object> ea && b is IEnumerable<object> eb)
-            return ea.SequenceEqual(eb);
-
-        return Equals(a, b);
     }
 }
