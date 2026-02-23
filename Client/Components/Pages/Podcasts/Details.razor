@@ -9,17 +9,17 @@
 
 <div class="space-y-8">
 
-    @if (loading)
+    @if (_loading)
     {
         <PodcastDetailsSkeleton />
         <EpisodeListSkeleton />
     }
-    else if (podcast is not null)
+    else if (_podcast is not null)
     {
-        <PodcastDetailsSection Podcast="@podcast" />
+        <PodcastDetailsSection Podcast="@_podcast" />
 
-        <EpisodeListSection Image="@podcast.Image"
-                            Episodes="@episodes" />
+        <EpisodeListSection Image="@_podcast.Image"
+                            Episodes="@_episodes" />
     }
 
 </div>
@@ -28,24 +28,30 @@
 {
     [Parameter] public int Id { get; set; }
 
-    private Podcast? podcast;
-    private List<Episode> episodes = [];
+    private CancellationTokenSource? _cts;
 
-    private bool loading = true;
+    private Podcast? _podcast;
+    private List<Episode> _episodes = [];
 
-    protected override async Task OnInitializedAsync()
+    private bool _loading = true;
+
+
+    protected override async Task OnParametersSetAsync()
     {
+        _cts?.Cancel();
+        _cts = new();
+
         try
         {
-            loading = true;
+            _loading = true;
 
-            var task1 = Client.Podcasts.ByFeedIdAsync(Id);
-            var task2 = Client.Episodes.ByFeedIdAsync(Id);
+            var task1 = Client.Podcasts.ByFeedIdAsync(Id, _cts.Token);
+            var task2 = Client.Episodes.ByFeedIdAsync(Id, _cts.Token);
 
             await Task.WhenAll(task1, task2);
 
-            podcast = task1.Result.Value;
-            episodes = task2.Result.Items;
+            _podcast = task1.Result.Value;
+            _episodes = task2.Result.Items;
         }
         catch (OperationCanceledException) { }
         catch (Exception)
@@ -54,7 +60,7 @@
         }
         finally
         {
-            loading = false;
+            _loading = false;
         }
     }
 }
