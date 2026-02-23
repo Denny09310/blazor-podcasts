@@ -23,7 +23,7 @@
                 Episodes
             </h3>
 
-            @if (episodes.Any() == true)
+            @if (episodes.Count != 0)
             {
                 <div class="flex flex-col gap-4">
                     @foreach (var episode in episodes)
