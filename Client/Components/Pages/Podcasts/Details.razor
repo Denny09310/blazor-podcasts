@@ -27,24 +27,7 @@
 
     </Loadable>
 
-    <Loadable Loader="LoadEpisodesAsync">
-
-        <Loading>
-            <EpisodeListSkeleton />
-        </Loading>
-
-        <Error>
-            <BbAlert Variant="AlertVariant.Danger">
-                <BbAlertTitle>Error</BbAlertTitle>
-                <BbAlertDescription>Failed to load episodes.</BbAlertDescription>
-            </BbAlert>
-        </Error>
-
-        <ChildContent Context="episodes">
-            <EpisodeListSection Episodes="@episodes" Image="@_podcast?.Image" />
-        </ChildContent>
-
-    </Loadable>
+    <EpisodesList Id="@Id" />
 
 </div>
 
@@ -60,11 +43,5 @@
         _podcast = response.Value;
         
         return _podcast;
-    }
-
-    private async Task<List<Episode>> LoadEpisodesAsync(CancellationToken ct)
-    {
-        var response = await Client.Episodes.ByFeedIdAsync(Id, ct);
-        return response.Items;
     }
 }
