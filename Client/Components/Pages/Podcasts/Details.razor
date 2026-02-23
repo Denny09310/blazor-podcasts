@@ -2,7 +2,7 @@
 
 @inject PodcastIndexClient Client
 
-<header class="sticky top-0 z-50 flex items-center gap-4 bg-white py-3 ps-4 dark:bg-black">
+<SectionContent SectionName="main-layout-header">
 
     <button class="rounded-full p-2 transition hover:bg-neutral-200 dark:hover:bg-neutral-800" onclick="history.back()">
         <Blazicon Svg="Lucide.ArrowLeft" class="size-5!" />
@@ -12,9 +12,9 @@
         @podcast?.Title
     </h1>
 
-</header>
+</SectionContent>
 
-<main class="space-y-8 p-4">
+<div class="space-y-8">
 
     @if (loading)
     {
@@ -142,7 +142,7 @@
         </p>
     }
 
-</main>
+</div>
 
 @code
 {

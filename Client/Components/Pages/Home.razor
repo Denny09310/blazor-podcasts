@@ -2,7 +2,7 @@
 
 @inject PodcastIndexClient Client
 
-<header class="sticky top-0 z-50 flex items-center gap-4 bg-white py-3 ps-4 dark:bg-black">
+<SectionContent SectionName="main-layout-header">
 
     <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-sm font-semibold text-white">
         D
@@ -29,9 +29,9 @@
         </div>
     }
 
-</header>
+</SectionContent>
 
-<main class="space-y-8 p-3">
+<div class="space-y-8">
 
     @if (!string.IsNullOrWhiteSpace(error))
     {
@@ -192,7 +192,7 @@
 
     </section>
 
-</main>
+</div>
 
 @code
 {
@@ -216,19 +216,19 @@
     {
         try
         {
-            var task1 = Client.Categories.ListAsync();
-            var task2 = Client.Podcasts.TrendingAsync(new TrendingRequest
-            {
-                Max = 12,
-                Since = GetLastMonday(),
-            });
-            var task3 = Client.Episodes.RandomAsync(new RandomEpisodesRequest { Max = 2 });
+            // var task1 = Client.Categories.ListAsync();
+            // var task2 = Client.Podcasts.TrendingAsync(new TrendingRequest
+            // {
+            //     Max = 12,
+            //     Since = GetLastMonday(),
+            // });
+            // var task3 = Client.Episodes.RandomAsync(new RandomEpisodesRequest { Max = 2 });
 
-            await Task.WhenAll(task1, task2, task3);
+            // await Task.WhenAll(task1, task2, task3);
 
-            categories = task1.Result;
-            trending = task2.Result;
-            episodes = task3.Result;
+            // categories = task1.Result;
+            // trending = task2.Result;
+            // episodes = task3.Result;
         }
         catch (Exception ex)
         {
