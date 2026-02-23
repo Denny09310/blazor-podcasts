@@ -5,7 +5,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-internal abstract class BaseRequest
+public abstract class BaseRequest
 {
     public int? Max { get; init; }
 

@@ -1,28 +1,42 @@
 ﻿@using Client.Components.Pages.Home.Shared.Skeletons
 
+@inject PodcastIndexClient Client
+
 <section class="space-y-4">
 
     <h2 class="text-lg font-bold tracking-tight text-foreground">
         Discover Episodes
     </h2>
 
-    @if (Items is null)
-    {
-        <EpisodesSkeleton />
-    }
-    else
-    {
-        <div class="flex flex-col gap-6">
-            @foreach (var item in Items)
-            {
-                <EpisodeCard @key="item.Id" Item="@item" />
-            }
-        </div>
-    }
+    <Loadable Loader="LoadEpisodesAsync">
+
+        <Loading>
+            <EpisodesSkeleton />
+        </Loading>
+
+        <ChildContent Context="episodes">
+
+            <div class="flex flex-col gap-6">
+                @foreach (var item in episodes)
+                {
+                    <EpisodeCard @key="item.Id" Item="@item" />
+                }
+            </div>
+
+        </ChildContent>
+
+    </Loadable>
 
 </section>
 
-@code 
+@code
 {
-    [Parameter] public IEnumerable<RandomEpisode>? Items { get; set; }
+    private async Task<IEnumerable<RandomEpisode>> LoadEpisodesAsync(CancellationToken ct)
+    {
+        var response = await Client.Episodes.RandomAsync(
+            new RandomEpisodesRequest() { Max = 2 },
+            ct);
+
+        return response.Episodes;
+    }
 }

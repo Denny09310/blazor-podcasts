@@ -1,21 +1,36 @@
 ﻿@using Client.Components.Pages.Home.Shared.Skeletons
+@inject PodcastIndexClient Client
 
-@if (Loading)
-{
-    <PodcastGridSkeleton />
-}
-else if (Items?.Any() == true)
-{
-    <div class="grid grid-cols-2 gap-3">
-        @foreach (var item in Items)
-        {
-            <PodcastCard @key="item.Id" Item="@item" />
-        }
-    </div>
-}
+<Loadable Key="Categories" Loader="LoadTrendingsAsync">
 
-@code 
+    <Loading>
+        <PodcastGridSkeleton />
+    </Loading>
+
+
+    <ChildContent Context="trendings">
+
+        <div class="grid grid-cols-2 gap-3">
+            @foreach (var item in trendings)
+            {
+                <PodcastCard @key="item.Id" Item="item" />
+            }
+        </div>
+
+    </ChildContent>
+
+</Loadable>
+
+@code
 {
-    [Parameter] public IEnumerable<PodcastSummary>? Items { get; set; }
-    [Parameter] public bool Loading { get; set; }
+    [Parameter] public string[] Categories { get; set; } = [];
+
+    private async Task<IEnumerable<PodcastSummary>> LoadTrendingsAsync(CancellationToken ct)
+    {
+        var response = await Client.Podcasts.TrendingAsync(
+            new TrendingRequest { Max = 6, Cat = Categories },
+            ct);
+
+        return response.Searches;
+    }
 }

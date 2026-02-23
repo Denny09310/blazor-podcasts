@@ -24,7 +24,7 @@
     @if (!string.IsNullOrWhiteSpace(Episode.Description))
     {
         <p class="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
-            @Regexes.GetHtmlTags().Replace(Episode.Description, "")
+            @Regexes.StripHtml(Episode.Description)
         </p>
     }
 

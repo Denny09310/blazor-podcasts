@@ -17,7 +17,7 @@
     @if (!string.IsNullOrWhiteSpace(Podcast.Description))
     {
         <p class="text-muted-foreground text-sm leading-relaxed">
-            @Regexes.GetHtmlTags().Replace(Podcast.Description, "")
+            @Regexes.StripHtml(Podcast.Description)
         </p>
     }
 

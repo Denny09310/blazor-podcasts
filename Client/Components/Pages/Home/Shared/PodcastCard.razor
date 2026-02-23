@@ -10,7 +10,7 @@
             @Item.Title
         </h3>
         <p class="truncate text-xs opacity-75">
-            @Regexes.GetHtmlTags().Replace(Item.Description, "")
+            @Regexes.StripHtml(Item.Description)
         </p>
     </div>
 

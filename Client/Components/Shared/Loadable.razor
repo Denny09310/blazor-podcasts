@@ -1,0 +1,101 @@
+﻿@typeparam TItem
+@implements IDisposable
+
+@if (_loading)
+{
+    @if (Loading is not null)
+    {
+        @Loading
+    }
+}
+else if (_error)
+{
+    @Error?.Invoke(ReloadAsync)
+}
+else if (_data is not null)
+{
+    @ChildContent?.Invoke(_data)
+}
+
+@code 
+{
+    [Parameter, EditorRequired]
+    public Func<CancellationToken, Task<TItem>> Loader { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment<TItem>? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Loading { get; set; }
+
+    [Parameter]
+    public RenderFragment<Func<Task>>? Error { get; set; }
+
+    [Parameter] 
+    public object? Key { get; set; }
+
+    private TItem? _data;
+    private object? _previous;
+    private bool _loading, _loaded, _error;
+
+    private CancellationTokenSource? _cts;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!_loaded || !AreEqual(_previous, Key))
+        {
+            _loaded = true;
+            _previous = Key;
+
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+
+        _cts = new();
+
+        _loading = true;
+        _error = false;
+
+        try
+        {
+            _data = await Loader(_cts.Token);
+        }
+        catch (OperationCanceledException) { }
+        catch
+        {
+            _error = true;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    public async Task ReloadAsync()
+    {
+        await LoadAsync();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
+
+    private static bool AreEqual(object? a, object? b)
+    {
+        if (ReferenceEquals(a, b))
+            return true;
+
+        if (a is IEnumerable<object> ea && b is IEnumerable<object> eb)
+            return ea.SequenceEqual(eb);
+
+        return Equals(a, b);
+    }
+}

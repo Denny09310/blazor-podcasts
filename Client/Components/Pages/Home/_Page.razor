@@ -1,110 +1,28 @@
 ﻿@page "/"
 @using Client.Components.Pages.Home.Shared
 
-@inject PodcastIndexClient Client
-@inject ToastService Toast
-
-<HomeHeader Categories="@_categories"
-            Selected="@_selected"
-            OnToggle="ToggleAsync" />
+<HomeHeader Selected="@_selected"
+            OnToggle="Toggle" />
 
 <div class="space-y-8">
 
-    <PodcastGrid Items="@_bycategory?.Searches"
-                 Loading="@_loading" />
+    <PodcastGrid Categories="@Categories" />
 
-    <TrendingSection Items="@_trending?.Searches" />
+    <TrendingSection />
 
-    <DiscoverEpisodesSection Items="@_episodes?.Episodes" />
+    <DiscoverEpisodesSection />
 
 </div>
 
 @code
 {
-    private SearchResponse? _bycategory, _trending;
-    private CategoriesResponse? _categories;
-    private RandomEpisodesResponse? _episodes;
+    private HashSet<string> _selected = [];
 
-    private bool _loading = true;
+    private string[] Categories => _selected.ToArray();
 
-    private HashSet<long> _selected = [];
-    private CancellationTokenSource? cts;
-
-    private string[] Selected =>
-        _categories?.Categories
-            .Where(c => _selected.Contains(c.Id))
-            .Select(c => c.Name)
-            .ToArray() ?? [];
-
-    protected override async Task OnInitializedAsync()
+    private void Toggle(string categoryName)
     {
-        try
-        {
-            var task1 = Client.Categories.ListAsync();
-            var task2 = Client.Podcasts.TrendingAsync(new TrendingRequest
-            {
-                Max = 12,
-                Since = GetLastMonday(),
-            });
-            var task3 = Client.Episodes.RandomAsync(new RandomEpisodesRequest { Max = 2 });
-
-            await Task.WhenAll(task1, task2, task3);
-
-            _categories = task1.Result;
-            _trending = task2.Result;
-            _episodes = task3.Result;
-        }
-        catch (OperationCanceledException) { }
-        catch (Exception)
-        {
-            Toast.Error(description: "Can't load data at the moment.");
-        }
-
-        await PopulateAsync();
-    }
-
-    private async Task PopulateAsync()
-    {
-        try
-        {
-            cts?.Cancel();
-            cts = new CancellationTokenSource();
-
-            _loading = true;
-
-            _bycategory = await Client.Podcasts.TrendingAsync(
-                new TrendingRequest { Max = 6, Cat = Selected },
-                cts.Token);
-        }
-        catch (OperationCanceledException) { }
-        catch (Exception)
-        {
-            Toast.Error(description: "Can't load trending podcasts at the moment.");
-        }
-        finally
-        {
-            _loading = false;
-        }
-    }
-
-    private async Task ToggleAsync(long categoryId)
-    {
-        if (!_selected.Add(categoryId))
-        {
-            _selected.Remove(categoryId);
-        }
-
-        await PopulateAsync();
-    }
-
-    public static DateTime GetLastMonday(bool includeToday = true)
-    {
-        DateTime today = DateTime.Now;
-        int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
-
-        if (!includeToday && diff == 0)
-            diff = 7;
-
-        return today.AddDays(-diff).Date;
+        if (!_selected.Add(categoryName))
+            _selected.Remove(categoryName);
     }
 }

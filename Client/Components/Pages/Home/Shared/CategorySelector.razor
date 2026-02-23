@@ -1,32 +1,28 @@
-﻿@using Client.Components.Pages.Home.Shared.Skeletons
+﻿<div class="no-scrollbar flex flex-1 gap-2 overflow-x-auto rounded-s-full">
 
-@if (Categories is null)
-{
-    <CategorySkeleton />
-}
-else if (Categories.Categories?.Any() == true)
-{
-    <div class="no-scrollbar flex flex-1 gap-2 overflow-x-auto rounded-s-full">
+    @foreach (var category in Categories)
+    {
+        var classes = Selected.Contains(category.Name)
+        ? "bg-muted text-muted-foreground"
+        : "bg-muted-light text-muted-foreground active:scale-95";
 
-        @foreach (var category in Categories.Categories)
-        {
-            var classes = Selected.Contains(category.Id)
-            ? "bg-muted text-muted-foreground"
-            : "bg-muted-light text-muted-foreground active:scale-95";
+        <button @key="category.Id"
+                class="shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all @classes"
+                @onclick="() => OnToggle.InvokeAsync(category.Name)">
+            @category.Name
+        </button>
+    }
 
-            <button @key="category.Id"
-                    class="shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all @classes"
-                    @onclick="() => OnToggle.InvokeAsync(category.Id)">
-                @category.Name
-            </button>
-        }
-
-    </div>
-}
+</div>
 
 @code 
 {
-    [Parameter] public CategoriesResponse? Categories { get; set; }
-    [Parameter] public HashSet<long> Selected { get; set; } = [];
-    [Parameter] public EventCallback<long> OnToggle { get; set; }
+    [Parameter, EditorRequired] 
+    public IEnumerable<Category> Categories { get; set; }
+
+    [Parameter] 
+    public HashSet<string> Selected { get; set; } = [];
+    
+    [Parameter]
+    public EventCallback<string> OnToggle { get; set; }
 }

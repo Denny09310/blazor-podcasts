@@ -3,24 +3,48 @@
 @using Client.Components.Pages.Podcasts.Shared.Skeletons
 
 @inject PodcastIndexClient Client
-@inject ToastService Toast
 
-<PodcastHeader Title="podcast?.Title" />
+<PodcastHeader Title="@_podcast?.Title" />
 
 <div class="space-y-8">
 
-    @if (_loading)
-    {
-        <PodcastDetailsSkeleton />
-        <EpisodeListSkeleton />
-    }
-    else if (_podcast is not null)
-    {
-        <PodcastDetailsSection Podcast="@_podcast" />
+    <Loadable Loader="LoadPodcastAsync">
 
-        <EpisodeListSection Image="@_podcast.Image"
-                            Episodes="@_episodes" />
-    }
+        <Loading>
+            <PodcastDetailsSkeleton />
+        </Loading>
+
+        <Error>
+            <BbAlert Variant="AlertVariant.Danger">
+                <BbAlertTitle>Error</BbAlertTitle>
+                <BbAlertDescription>Failed to load podcast.</BbAlertDescription>
+            </BbAlert>
+        </Error>
+
+        <ChildContent Context="podcast">
+            <PodcastDetailsSection Podcast="@podcast" />
+        </ChildContent>
+
+    </Loadable>
+
+    <Loadable Loader="LoadEpisodesAsync">
+
+        <Loading>
+            <EpisodeListSkeleton />
+        </Loading>
+
+        <Error>
+            <BbAlert Variant="AlertVariant.Danger">
+                <BbAlertTitle>Error</BbAlertTitle>
+                <BbAlertDescription>Failed to load episodes.</BbAlertDescription>
+            </BbAlert>
+        </Error>
+
+        <ChildContent Context="episodes">
+            <EpisodeListSection Episodes="@episodes" Image="@_podcast?.Image" />
+        </ChildContent>
+
+    </Loadable>
 
 </div>
 
@@ -28,39 +52,19 @@
 {
     [Parameter] public int Id { get; set; }
 
-    private CancellationTokenSource? _cts;
-
     private Podcast? _podcast;
-    private List<Episode> _episodes = [];
 
-    private bool _loading = true;
-
-
-    protected override async Task OnParametersSetAsync()
+    private async Task<Podcast> LoadPodcastAsync(CancellationToken ct)
     {
-        _cts?.Cancel();
-        _cts = new();
+        var response = await Client.Podcasts.ByFeedIdAsync(Id, ct);
+        _podcast = response.Value;
+        
+        return _podcast;
+    }
 
-        try
-        {
-            _loading = true;
-
-            var task1 = Client.Podcasts.ByFeedIdAsync(Id, _cts.Token);
-            var task2 = Client.Episodes.ByFeedIdAsync(Id, _cts.Token);
-
-            await Task.WhenAll(task1, task2);
-
-            _podcast = task1.Result.Value;
-            _episodes = task2.Result.Items;
-        }
-        catch (OperationCanceledException) { }
-        catch (Exception)
-        {
-            Toast.Error("Can't load podcast details at the moment.");
-        }
-        finally
-        {
-            _loading = false;
-        }
+    private async Task<List<Episode>> LoadEpisodesAsync(CancellationToken ct)
+    {
+        var response = await Client.Episodes.ByFeedIdAsync(Id, ct);
+        return response.Items;
     }
 }

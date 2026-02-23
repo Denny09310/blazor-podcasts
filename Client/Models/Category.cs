@@ -4,7 +4,7 @@ namespace Client.Models;
 
 #pragma warning disable CS8618
 
-public sealed class CategoryDto
+public sealed class Category
 {
     [JsonPropertyName("id")]
     public long Id { get; set; }
