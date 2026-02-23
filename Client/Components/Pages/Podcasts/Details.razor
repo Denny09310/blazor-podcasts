@@ -1,58 +1,58 @@
 ﻿@page "/podcasts/{id:int}"
 
 @inject PodcastIndexClient Client
+@inject ToastService Toast
 
-<SectionContent SectionName="main-layout-header">
+<HeaderContent>
 
-    <button class="rounded-full p-2 transition hover:bg-neutral-200 dark:hover:bg-neutral-800" onclick="history.back()">
-        <Blazicon Svg="Lucide.ArrowLeft" class="size-5!" />
+    <button class="rounded-full p-2 transition hover:bg-muted" onclick="history.back()">
+        <LucideIcon Name="arrow-left" />
     </button>
 
     <h1 class="truncate text-sm font-semibold">
         @podcast?.Title
     </h1>
 
-</SectionContent>
+</HeaderContent>
 
 <div class="space-y-8">
 
     @if (loading)
     {
-        <!-- HERO SKELETON -->
         <div class="animate-pulse space-y-4">
 
-            <div class="aspect-square w-full rounded-xl bg-neutral-300 dark:bg-neutral-700"></div>
+            <div class="aspect-square w-full rounded-xl bg-muted"></div>
 
             <div class="space-y-2">
-                <div class="h-4 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
-                <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                <div class="h-4 w-3/4 rounded bg-muted"></div>
+                <div class="h-3 w-1/2 rounded bg-muted"></div>
             </div>
 
             <div class="space-y-2">
-                <div class="h-3 w-full rounded bg-neutral-300 dark:bg-neutral-700"></div>
-                <div class="h-3 w-5/6 rounded bg-neutral-300 dark:bg-neutral-700"></div>
-                <div class="h-3 w-2/3 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                <div class="h-3 w-full rounded bg-muted"></div>
+                <div class="h-3 w-5/6 rounded bg-muted"></div>
+                <div class="h-3 w-2/3 rounded bg-muted"></div>
             </div>
         </div>
 
-        <!-- EPISODE SKELETONS -->
-        @for (int i = 0; i < 5; i++)
-        {
-            <div class="animate-pulse space-y-3">
-                <div class="flex items-center gap-4">
-                    <div class="size-12 rounded bg-neutral-300 dark:bg-neutral-700"></div>
-                    <div class="flex-1 space-y-2">
-                        <div class="h-3 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
-                        <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+        <div class="flex flex-col gap-4">
+            @for (int i = 0; i < 5; i++)
+            {
+                <div class="animate-pulse space-y-3 bg-muted-light p-3">
+                    <div class="flex items-center gap-2">
+                        <div class="size-12 rounded bg-muted"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-3 w-3/4 rounded bg-muted"></div>
+                            <div class="h-3 w-1/2 rounded bg-muted"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     }
     else if (podcast is not null)
     {
-        <!-- HERO -->
-        <section class="space-y-5">
+        <section class="space-y-4">
 
             <img class="aspect-square w-full rounded-xl object-cover"
                  src="@podcast.Image"
@@ -63,21 +63,20 @@
                     @podcast.Title
                 </h2>
 
-                <p class="text-sm opacity-75">
+                <p class="text-muted-foreground text-sm">
                     @podcast.Author
                 </p>
             </div>
 
             @if (!string.IsNullOrWhiteSpace(podcast.Description))
             {
-                <p class="text-sm leading-relaxed opacity-80">
+                <p class="text-muted-foreground text-sm leading-relaxed">
                     @Regexes.GetHtmlTags().Replace(podcast.Description, "")
                 </p>
             }
 
         </section>
 
-        <!-- EPISODES -->
         <section class="space-y-4">
 
             <h3 class="text-lg font-bold tracking-tight">
@@ -86,12 +85,11 @@
 
             @if (episodes?.Any() == true)
             {
-                <div class="flex flex-col gap-6">
+                <div class="flex flex-col gap-4">
 
                     @foreach (var episode in episodes)
                     {
-                        <div @key="episode.Id"
-                             class="space-y-3 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+                        <div @key="episode.Id" class="space-y-3 rounded-lg border border-border bg-card p-3">
 
                             <div class="flex items-center gap-4">
 
@@ -103,20 +101,20 @@
                                     <h4 class="truncate text-sm font-semibold">
                                         @episode.Title
                                     </h4>
-                                    <p class="truncate text-xs opacity-75">
+                                    <p class="text-muted-foreground truncate text-xs">
                                         @episode.DatePublished.ToString("D")
                                     </p>
                                 </div>
 
-                                <button class="rounded-full p-2 transition hover:bg-neutral-200 dark:hover:bg-neutral-800">
-                                    <Blazicon Svg="Lucide.Play" class="size-5!" />
-                                </button>
+                                <BbButton Size="ButtonSize.Icon" Class="rounded-full">
+                                    <LucideIcon Name="play" />
+                                </BbButton>
 
                             </div>
 
                             @if (!string.IsNullOrWhiteSpace(episode.Description))
                             {
-                                <p class="line-clamp-3 text-xs leading-relaxed opacity-75">
+                                <p class="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
                                     @Regexes.GetHtmlTags().Replace(episode.Description, "")
                                 </p>
                             }
@@ -128,18 +126,12 @@
             }
             else
             {
-                <p class="text-sm opacity-60">
+                <p class="text-muted-foreground text-sm">
                     No episodes found.
                 </p>
             }
 
         </section>
-    }
-    else
-    {
-        <p class="text-sm text-red-500">
-            Unable to load podcast.
-        </p>
     }
 
 </div>
@@ -166,6 +158,11 @@
 
             podcast = task1.Result.Value;
             episodes = task2.Result.Items;
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception)
+        {
+            Toast.Error("Can't load podcast details at the moment.");
         }
         finally
         {

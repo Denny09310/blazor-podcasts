@@ -1,3 +1,4 @@
+using BlazorBlueprint.Components;
 using Client.Components;
 using Client.Services;
 using Microsoft.AspNetCore.Components.Web;
@@ -9,6 +10,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IPersistentCache, LocalStorageCache>();
+
+builder.Services.AddBlazorBlueprintComponents();
+builder.Services.AddScoped<ToastService>();
 
 builder.Services.AddPulseState(typeof(Program).Assembly);
 

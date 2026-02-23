@@ -1,23 +1,33 @@
 ﻿@page "/"
 
 @inject PodcastIndexClient Client
+@inject ToastService Toast
 
-<SectionContent SectionName="main-layout-header">
+<HeaderContent Class="px-3 ps-4">
 
-    <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-sm font-semibold text-white">
-        D
-    </div>
+    <BbAvatar>
+        <BbAvatarFallback Class="bg-primary">D</BbAvatarFallback>
+    </BbAvatar>
 
-    @if (categories?.Categories?.Any() == true)
+    @if (categories is null)
     {
+        <div class="no-scrollbar flex flex-1 gap-2 overflow-x-auto rounded-s-full">
+            @for (int i = 0; i < 6; i++)
+            {
+                <BbSkeleton Class="h-8 w-20 shrink-0 rounded-full" />
+            }
+        </div>
+    }
+    else if (categories.Categories?.Any() == true)
+    {
+
         <div class="no-scrollbar flex flex-1 gap-2 overflow-x-auto rounded-s-full">
 
             @foreach (var category in categories.Categories)
             {
-                var selected = this.selected.Contains(category.Id);
-                var classes = selected
-                ? "bg-neutral-900 text-white"
-                : "bg-neutral-100 text-neutral-700 active:scale-95";
+                var classes = selected.Contains(category.Id)
+                ? "bg-muted text-muted-foreground"
+                : "bg-muted-light text-muted-foreground active:scale-95";
 
                 <button @key="category.Id"
                         class="shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all @classes"
@@ -29,27 +39,20 @@
         </div>
     }
 
-</SectionContent>
+</HeaderContent>
 
 <div class="space-y-8">
-
-    @if (!string.IsNullOrWhiteSpace(error))
-    {
-        <div class="rounded bg-red-500/10 p-3 text-sm text-red-600">
-            @error
-        </div>
-    }
 
     @if (loading)
     {
         <div class="grid grid-cols-2 gap-3">
             @for (int i = 0; i < 6; i++)
             {
-                <div class="flex animate-pulse gap-x-2 rounded bg-neutral-100 p-2 dark:bg-neutral-800">
-                    <div class="size-12 shrink-0 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                <div class="flex animate-pulse gap-x-2 rounded bg-muted-light p-2">
+                    <BbSkeleton Class="size-12 shrink-0 rounded" />
                     <div class="flex-1 space-y-1">
-                        <div class="h-3 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
-                        <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                        <BbSkeleton Class="h-3 w-3/4 rounded" />
+                        <BbSkeleton Class="h-3 w-1/2 rounded" />
                     </div>
                 </div>
             }
@@ -60,9 +63,10 @@
         <div class="grid grid-cols-2 gap-3">
             @foreach (var item in bycategory.Searches)
             {
+
                 <a @key="item.Id"
                    href="@($"/podcasts/{item.Id}")"
-                   class="flex items-center gap-x-3 rounded bg-neutral-500/10 p-2 transition hover:bg-neutral-500/20">
+                   class="flex items-center gap-x-3 rounded bg-muted p-2 transition hover:bg-muted-dark">
 
                     <img class="size-12 rounded object-cover"
                          src="@item.Image"
@@ -84,7 +88,7 @@
 
     <section id="trending-from-monday" class="space-y-3">
 
-        <h2 class="text-lg font-bold tracking-tight">
+        <h2 class="text-lg font-bold tracking-tight text-foreground">
             Trending from Monday
         </h2>
 
@@ -93,10 +97,10 @@
             <div class="no-scrollbar flex gap-3 overflow-x-auto">
                 @for (int i = 0; i < 6; i++)
                 {
-                    <div class="w-24 shrink-0 animate-pulse space-y-2">
-                        <div class="size-24 rounded-md bg-neutral-300 dark:bg-neutral-700"></div>
-                        <div class="h-3 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
-                        <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                    <div class="w-24 shrink-0 space-y-2">
+                        <BbSkeleton Class="size-24 rounded-md" />
+                        <BbSkeleton Class="h-3 w-3/4 rounded" />
+                        <BbSkeleton Class="h-3 w-1/2 rounded" />
                     </div>
                 }
             </div>
@@ -130,10 +134,9 @@
 
     </section>
 
-    <!-- RANDOM EPISODES -->
     <section id="random-podcast-episodes" class="space-y-4">
 
-        <h2 class="text-lg font-bold tracking-tight">
+        <h2 class="text-lg font-bold tracking-tight text-foreground">
             Discover Episodes
         </h2>
 
@@ -141,15 +144,15 @@
         {
             @for (int i = 0; i < 2; i++)
             {
-                <div class="animate-pulse space-y-3">
+                <div class="space-y-3">
                     <div class="flex items-center gap-4">
-                        <div class="size-12 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                        <BbSkeleton Class="size-12 rounded" />
                         <div class="flex-1 space-y-2">
-                            <div class="h-3 w-3/4 rounded bg-neutral-300 dark:bg-neutral-700"></div>
-                            <div class="h-3 w-1/2 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+                            <BbSkeleton class="h-3 w-3/4 rounded"/>
+                            <BbSkeleton class="h-3 w-1/2 rounded"/>
                         </div>
                     </div>
-                    <div class="aspect-video rounded-md bg-neutral-300 dark:bg-neutral-700"></div>
+                    <BbSkeleton Class="aspect-video rounded-md" />
                 </div>
             }
         }
@@ -175,9 +178,9 @@
                                 </p>
                             </div>
 
-                            <button type="button" class="rounded-full p-2 transition hover:bg-neutral-500/20">
-                                <Blazicon Svg="Lucide.EllipsisVertical" class="size-5!" />
-                            </button>
+                            <BbButton Variant="ButtonVariant.Ghost" Size="ButtonSize.Icon" Class="rounded-full">
+                                <LucideIcon Name="ellipsis-vertical" />
+                            </BbButton>
 
                         </div>
 
@@ -201,7 +204,6 @@
     private RandomEpisodesResponse? episodes;
 
     private bool loading = true;
-    private string? error;
 
     private HashSet<long> selected = [];
     private CancellationTokenSource? cts;
@@ -216,23 +218,24 @@
     {
         try
         {
-            // var task1 = Client.Categories.ListAsync();
-            // var task2 = Client.Podcasts.TrendingAsync(new TrendingRequest
-            // {
-            //     Max = 12,
-            //     Since = GetLastMonday(),
-            // });
-            // var task3 = Client.Episodes.RandomAsync(new RandomEpisodesRequest { Max = 2 });
+            var task1 = Client.Categories.ListAsync();
+            var task2 = Client.Podcasts.TrendingAsync(new TrendingRequest
+            {
+                Max = 12,
+                Since = GetLastMonday(),
+            });
+            var task3 = Client.Episodes.RandomAsync(new RandomEpisodesRequest { Max = 2 });
 
-            // await Task.WhenAll(task1, task2, task3);
+            await Task.WhenAll(task1, task2, task3);
 
-            // categories = task1.Result;
-            // trending = task2.Result;
-            // episodes = task3.Result;
+            categories = task1.Result;
+            trending = task2.Result;
+            episodes = task3.Result;
         }
-        catch (Exception ex)
+        catch (OperationCanceledException) { }
+        catch (Exception)
         {
-            error = ex.Message;
+            Toast.Error(description: "Can't load data at the moment.");
         }
 
         await PopulateAsync();
@@ -246,16 +249,15 @@
             cts = new CancellationTokenSource();
 
             loading = true;
-            error = null;
 
             bycategory = await Client.Podcasts.TrendingAsync(
                 request: new TrendingRequest { Max = 6, Cat = Selected },
                 ct: cts.Token);
         }
         catch (OperationCanceledException) { }
-        catch (Exception ex)
+        catch (Exception)
         {
-            error = ex.Message;
+            Toast.Error(description: "Can't load trending podcasts at the moment.");
         }
         finally
         {
@@ -281,6 +283,4 @@
 
         return today.AddDays(-diff).Date;
     }
-
-   
 }

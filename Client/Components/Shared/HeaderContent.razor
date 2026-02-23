@@ -1,0 +1,12 @@
+﻿
+<SectionContent SectionName="main-layout-header">
+    <header class="sticky top-0 z-50 flex items-center gap-4 p-3 @Class">
+        @ChildContent
+    </header>
+</SectionContent>
+
+@code
+{
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+}
