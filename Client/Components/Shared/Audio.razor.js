@@ -1,5 +1,4 @@
 export function initialize(element, instance) {
-
     const controller = new AbortController();
 
     function bind(event, handler) {

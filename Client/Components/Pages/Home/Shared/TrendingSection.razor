@@ -4,12 +4,12 @@
 
 <section class="space-y-3">
 
-    <h2 class="text-lg font-bold tracking-tight text-foreground">
+    <h2 class="text-foreground text-lg font-bold tracking-tight">
         Trending from Monday
     </h2>
 
     <Loadable Loader="LoadTrendingsAsync">
-        
+
         <Loading>
             <TrendingSkeleton />
         </Loading>
@@ -43,7 +43,7 @@
     </Loadable>
 </section>
 
-@code 
+@code
 {
     private async Task<IEnumerable<PodcastSummary>> LoadTrendingsAsync(CancellationToken ct)
     {
