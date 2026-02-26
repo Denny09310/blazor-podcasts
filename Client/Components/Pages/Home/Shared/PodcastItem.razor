@@ -1,0 +1,14 @@
+﻿<BbItem AsChild="a" Href="@($"/podcasts/{Item.Id}")" Variant="ItemVariant.Muted" Size="ItemSize.Sm">
+    <BbItemMedia>
+        <img class="size-12 rounded object-cover" src="@Item.Image" alt="@(Item.Title)'s image" />
+    </BbItemMedia>
+    <BbItemContent>
+        <BbItemTitle>@Item.Title</BbItemTitle>
+        <BbItemDescription>@Regexes.StripHtml(Item.Description)</BbItemDescription>
+    </BbItemContent>
+</BbItem>
+
+@code
+{
+    [Parameter, EditorRequired] public PodcastSummary Item { get; set; } = default!;
+}

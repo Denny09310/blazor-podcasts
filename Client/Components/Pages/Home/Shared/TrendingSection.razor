@@ -4,7 +4,7 @@
 
 <section class="space-y-3">
 
-    <h2 class="text-foreground text-lg font-bold tracking-tight">
+    <h2 class="text-lg font-bold tracking-tight text-foreground">
         Trending from Monday
     </h2>
 
@@ -15,29 +15,14 @@
         </Loading>
 
         <ChildContent Context="trendings">
+            
             <div class="no-scrollbar flex gap-3 overflow-x-auto">
                 @foreach (var item in trendings)
                 {
-                    <a @key="item.Id"
-                       href="@($"/podcasts/{item.Id}")"
-                       class="w-24 shrink-0 space-y-2">
-
-                        <img class="size-24 rounded-md object-cover"
-                             src="@item.Image"
-                             alt="@(item.Title)'s image" />
-
-                        <div class="space-y-1">
-                            <h3 class="truncate text-sm font-semibold">
-                                @item.Title
-                            </h3>
-                            <p class="truncate text-xs opacity-75">
-                                @item.Author
-                            </p>
-                        </div>
-
-                    </a>
+                    <PodcastCard @key="item.Id" Podcast="@item" />
                 }
             </div>
+
         </ChildContent>
 
     </Loadable>

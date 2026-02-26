@@ -1,0 +1,13 @@
+@inject IJSRuntime JS
+
+<BbButton Size="ButtonSize.IconSmall" Variant="ButtonVariant.Ghost" Class="rounded-full" @onclick="HandleBack">
+    <LucideIcon Name="arrow-left" />
+</BbButton>
+
+@code
+{
+    private async Task HandleBack()
+    {
+        await JS.InvokeVoidAsync("history.back");
+    }
+}

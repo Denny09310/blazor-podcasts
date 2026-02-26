@@ -1,36 +1,32 @@
 @using Humanizer
 
-<div class="space-y-3 rounded-lg border border-border bg-card p-3">
+<BbCard Class="shadow-none">
+    <BbCardContent>
+        <BbItem>
+            <BbItemMedia>
+                <img class="size-12 shrink-0 rounded object-cover"
+                     src="@(!string.IsNullOrEmpty(Episode.Image) ? Episode.Image : Image)"
+                     alt="@(Episode.Title)'s image" />
+            </BbItemMedia>
+            <BbItemContent>
+                <BbItemTitle>@Episode.Title</BbItemTitle>
+                <BbItemDescription>@Episode.DatePublished.Humanize()</BbItemDescription>
+            </BbItemContent>
+            <BbItemActions>
+                <BbButton Size="ButtonSize.Icon" Class="rounded-full">
+                    <LucideIcon Name="play" />
+                </BbButton>
+            </BbItemActions>
+        </BbItem>
 
-    <div class="flex items-center gap-4">
-
-        <img class="size-12 shrink-0 rounded object-cover"
-             src="@(!string.IsNullOrEmpty(Episode.Image) ? Episode.Image : Image)"
-             alt="@(Episode.Title)'s image" />
-
-        <div class="min-w-0 flex-1 space-y-1">
-            <h4 class="truncate text-sm font-semibold">
-                @Episode.Title
-            </h4>
-            <p class="text-muted-foreground truncate text-xs">
-                @Episode.DatePublished.Humanize()
-            </p>
-        </div>
-
-        <BbButton Size="ButtonSize.Icon" Class="rounded-full">
-            <LucideIcon Name="play" />
-        </BbButton>
-
-    </div>
-
-    @if (!string.IsNullOrWhiteSpace(Episode.Description))
-    {
-        <p class="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
-            @Regexes.StripHtml(Episode.Description)
-        </p>
-    }
-
-</div>
+        @if (!string.IsNullOrWhiteSpace(Episode.Description))
+        {
+            <BbTypographyP Class="line-clamp-3">
+                @Regexes.StripHtml(Episode.Description)
+            </BbTypographyP>
+        }
+    </BbCardContent>
+</BbCard>
 
 @code
 {

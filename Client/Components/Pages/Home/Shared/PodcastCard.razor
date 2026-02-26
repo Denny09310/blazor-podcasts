@@ -1,16 +1,15 @@
-﻿<a href="@($"/podcasts/{Item.Id}")"
-   class="flex items-center gap-x-3 rounded bg-muted p-2 transition hover:bg-muted-dark">
+<a @key="Podcast.Id" href="@($"/podcasts/{Podcast.Id}")" class="w-24 shrink-0 space-y-2">
 
-    <img class="size-12 rounded object-cover"
-         src="@Item.Image"
-         alt="@(Item.Title)'s image" />
+    <img class="size-24 rounded-md object-cover"
+         src="@Podcast.Image"
+         alt="@(Podcast.Title)'s image" />
 
-    <div class="min-w-0 flex-1 space-y-1">
+    <div class="space-y-1">
         <h3 class="truncate text-sm font-semibold">
-            @Item.Title
+            @Podcast.Title
         </h3>
         <p class="truncate text-xs opacity-75">
-            @Regexes.StripHtml(Item.Description)
+            @Podcast.Author
         </p>
     </div>
 
@@ -18,5 +17,6 @@
 
 @code
 {
-    [Parameter, EditorRequired] public PodcastSummary Item { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public PodcastSummary Podcast { get; set; }
 }
