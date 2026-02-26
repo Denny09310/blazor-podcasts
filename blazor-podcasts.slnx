@@ -1,4 +1,6 @@
 <Solution>
   <Project Path="Client/Client.csproj" />
-  <Project Path="Server/Server.csproj" Id="194ea6e6-7231-4180-88f3-ad5632adb71d" />
+  <Project Path="Server/Server.csproj" Id="194ea6e6-7231-4180-88f3-ad5632adb71d">
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
 </Solution>

@@ -7,11 +7,11 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddMemoryCache();
-builder.Services.AddScoped<IPersistentCache, LocalStorageCache>();
-
 builder.Services.AddPulseState(typeof(Program).Assembly);
 
-builder.Services.AddPodcastIndex();
+builder.Services.AddHttpClient<PodcastIndexClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress + "podcastindex/");
+});
 
 await builder.Build().RunAsync();
