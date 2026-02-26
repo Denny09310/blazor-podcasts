@@ -16,6 +16,9 @@ builder.Services.AddScoped<ToastService>();
 
 builder.Services.AddPulseState(typeof(Program).Assembly);
 
-builder.Services.AddPodcastIndex();
+builder.Services.AddHttpClient<PodcastIndexClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress + "podcastindex/");
+});
 
 await builder.Build().RunAsync();
