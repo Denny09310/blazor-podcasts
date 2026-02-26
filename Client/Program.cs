@@ -8,9 +8,6 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddMemoryCache();
-builder.Services.AddScoped<IPersistentCache, LocalStorageCache>();
-
 builder.Services.AddBlazorBlueprintComponents();
 builder.Services.AddScoped<ToastService>();
 
