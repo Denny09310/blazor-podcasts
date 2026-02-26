@@ -1,29 +1,27 @@
-﻿<BbCard Class="overflow-hidden shadow-none">
+﻿<a href="podcasts/@Item.FeedId">
 
-    <BbCardHeader Class="flex items-center gap-4">
-        <BbItem>
-            <BbItemMedia>
-                <img class="size-12 shrink-0 rounded object-cover"
-                     src="@Item.Image"
-                     alt="@(Item.Title)'s image" />
-            </BbItemMedia>
-            <BbItemContent>
-                <BbItemTitle>@Item.Title</BbItemTitle>
-                <BbItemDescription>@Item.FeedTitle</BbItemDescription>
-            </BbItemContent>
-            <BbItemActions>
-                <BbButton Variant="ButtonVariant.Ghost" Size="ButtonSize.Icon" Class="rounded-full">
-                    <LucideIcon Name="ellipsis-vertical" />
-                </BbButton>
-            </BbItemActions>
-        </BbItem>
-    </BbCardHeader>
+    <BbItem Class="px-0">
+        <BbItemMedia>
+            <img class="size-12 shrink-0 rounded object-cover"
+                 src="@Item.FeedImage"
+                 alt="@(Item.Title)'s image" />
+        </BbItemMedia>
+        <BbItemContent>
+            <BbItemTitle>@Item.Title</BbItemTitle>
+            <BbItemDescription>@Item.FeedTitle</BbItemDescription>
+        </BbItemContent>
+        <BbItemActions>
+            <BbButton Variant="ButtonVariant.Ghost" Size="ButtonSize.Icon" Class="rounded-full">
+                <LucideIcon Name="ellipsis-vertical" />
+            </BbButton>
+        </BbItemActions>
+    </BbItem>
 
-    <img class="aspect-video rounded-md object-cover"
-         src="@Item.Image"
+    <img class="aspect-video rounded object-cover"
+         src="@(string.IsNullOrWhiteSpace(Item.Image) ? Item.FeedImage : Item.Image)"
          alt="@(Item.Title)'s image" />
 
-</BbCard>
+</a>
 
 @code
 {

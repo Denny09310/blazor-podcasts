@@ -2,9 +2,9 @@
     <BbItemMedia>
         <img class="size-12 rounded object-cover" src="@Item.Image" alt="@(Item.Title)'s image" />
     </BbItemMedia>
-    <BbItemContent>
-        <BbItemTitle>@Item.Title</BbItemTitle>
-        <BbItemDescription>@Regexes.StripHtml(Item.Description)</BbItemDescription>
+    <BbItemContent Class="min-w-0">
+        <BbItemTitle Class="line-clamp-1!">@Item.Title</BbItemTitle>
+        <BbItemDescription Class="line-clamp-1!">@Regexes.StripHtml(Item.Description)</BbItemDescription>
     </BbItemContent>
 </BbItem>
 

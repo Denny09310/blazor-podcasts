@@ -1,8 +1,8 @@
 @using Humanizer
 
-<BbCard Class="shadow-none">
+<BbCard Class="shadow-none border-none">
     <BbCardContent>
-        <BbItem>
+        <BbItem Class="px-0">
             <BbItemMedia>
                 <img class="size-12 shrink-0 rounded object-cover"
                      src="@(!string.IsNullOrEmpty(Episode.Image) ? Episode.Image : Image)"
@@ -21,9 +21,9 @@
 
         @if (!string.IsNullOrWhiteSpace(Episode.Description))
         {
-            <BbTypographyP Class="line-clamp-3">
+            <BbTypographyMuted Class="line-clamp-3">
                 @Regexes.StripHtml(Episode.Description)
-            </BbTypographyP>
+            </BbTypographyMuted>
         }
     </BbCardContent>
 </BbCard>
