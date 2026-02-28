@@ -1,0 +1,213 @@
+﻿<CascadingValue Value="this" IsFixed>
+
+    @ChildContent
+
+    <Audio @ref="_audio"
+           src="@_src"
+           OnLoadedMetadata="OnLoadedMetadata"
+           OnTimeUpdate="OnTimeUpdate" />
+
+    <div class="@PlayerContainerClass">
+
+        <div class="max-w-6xl mx-auto flex flex-col gap-3">
+
+            <!-- Top Row -->
+            <div class="flex items-center justify-between gap-4">
+
+                <!-- Episode Info -->
+                <div class="flex items-center gap-3 min-w-0">
+
+                    <img src="@CoverImage"
+                         class="w-12 h-12 rounded-md object-cover bg-muted shrink-0" />
+
+                    <div class="min-w-0">
+                        <div class="text-sm font-semibold truncate">
+                            @_episode?.Title
+                        </div>
+
+                        <div class="text-xs text-muted-foreground truncate flex items-center gap-2">
+
+                            @if (_episode is not null)
+                            {
+                                @if (_episode.Season > 0 || _episode.Episode.HasValue)
+                                {
+                                    <span>
+                                        S@_episode.Season
+                                        @if (_episode.Episode.HasValue)
+                                        {
+                                            <span>E@_episode.Episode</span>
+                                        }
+                                    </span>
+                                }
+
+                                <span>
+                                    @_episode.DatePublished.ToString("MMM dd, yyyy")
+                                </span>
+
+                                @if (_episode.Explicit)
+                                {
+                                    <span class="px-1.5 py-0.5 text-[10px] bg-red-500/20 text-red-400 rounded">
+                                        E
+                                    </span>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex items-center gap-2">
+
+                    <BbButton Size="ButtonSize.Icon"
+                              Variant="ButtonVariant.Ghost"
+                              @onclick="TogglePlay">
+                        <LucideIcon Name="@(_playing ? "pause" : "play")" />
+                    </BbButton>
+
+                    <BbButton Size="ButtonSize.Icon"
+                              Variant="ButtonVariant.Ghost"
+                              @onclick="StopAsync">
+                        <LucideIcon Name="square" />
+                    </BbButton>
+
+                </div>
+            </div>
+
+            <!-- Progress Row -->
+            <div class="flex items-center gap-3">
+
+                <span class="text-xs w-12 text-right tabular-nums">
+                    @FormatTime(_currentTime)
+                </span>
+
+                <BbSlider Min="0"
+                          Max="100"
+                          Step="0.1"
+                          @bind-Value:get="Progress"
+                          @bind-Value:set="OnSliderChanged"
+                          Class="flex-1" />
+
+                <span class="text-xs w-12 tabular-nums">
+                    @FormatTime(EffectiveDuration)
+                </span>
+
+            </div>
+
+        </div>
+    </div>
+
+</CascadingValue>
+
+@code {
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private Audio _audio = default!;
+    private Episode? _episode;
+    private string? _src;
+
+    private bool _playing;
+    private double _duration;
+    private double _currentTime;
+
+    private bool IsVisible => _episode is not null;
+
+    private string PlayerContainerClass => $"""
+        fixed bottom-0 left-0 right-0 z-50
+        bg-background/95 backdrop-blur-md
+        border-t border-border
+        px-6 pb-8 pt-4
+        shadow-lg
+        transition-transform duration-300 ease-in-out
+        {(IsVisible ? "translate-y-0" : "translate-y-full")}
+        """;
+
+    private string? CoverImage =>
+        _episode?.Image ?? _episode?.FeedImage;
+
+    private double EffectiveDuration =>
+        _duration > 0
+            ? _duration
+            : (_episode?.Duration ?? 0);
+
+    private double Progress =>
+        EffectiveDuration <= 0
+            ? 0
+            : (_currentTime / EffectiveDuration) * 100.0;
+
+    public async Task PlayAsync(Episode episode)
+    {
+        _episode = episode;
+
+        _src = !string.IsNullOrEmpty(episode.EnclosureUrl)
+            ? episode.EnclosureUrl
+            : episode.Link;
+
+        _playing = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task TogglePlay()
+    {
+        if (_playing)
+        {
+            await _audio.PauseAsync();
+            _playing = false;
+        }
+        else
+        {
+            await _audio.PlayAsync();
+            _playing = true;
+        }
+    }
+
+    private async Task StopAsync()
+    {
+        await _audio.StopAsync();
+
+        _playing = false;
+        _episode = null;
+        _src = null;
+
+        _currentTime = 0;
+        _duration = 0;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnLoadedMetadata()
+    {
+        _duration = await _audio.GetDurationAsync();
+        await _audio.PlayAsync();
+        _playing = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnTimeUpdate()
+    {
+        _currentTime = await _audio.GetCurrentTimeAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnSliderChanged(double percent)
+    {
+        if (EffectiveDuration <= 0)
+            return;
+
+        var newTime = (percent / 100.0) * EffectiveDuration;
+
+        _currentTime = newTime;
+        await _audio.SetCurrentTimeAsync(newTime);
+    }
+
+    private static string FormatTime(double seconds)
+    {
+        if (seconds <= 0)
+            return "00:00";
+
+        var ts = TimeSpan.FromSeconds(seconds);
+        return $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
+    }
+}

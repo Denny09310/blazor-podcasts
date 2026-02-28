@@ -1,6 +1,6 @@
 @using Humanizer
 
-<BbCard Class="shadow-none border-none">
+<BbCard>
     <BbCardContent>
         <BbItem Class="px-0">
             <BbItemMedia>
@@ -13,7 +13,7 @@
                 <BbItemDescription>@Episode.DatePublished.Humanize()</BbItemDescription>
             </BbItemContent>
             <BbItemActions>
-                <BbButton Size="ButtonSize.Icon" Class="rounded-full">
+                <BbButton Size="ButtonSize.Icon" Class="rounded-full" @onclick="PlayAsync">
                     <LucideIcon Name="play" />
                 </BbButton>
             </BbItemActions>
@@ -35,4 +35,12 @@
 
     [Parameter]
     public string? Image { get; set; }
+
+    [Parameter]
+    public EventCallback<Episode> OnPlay { get; set; }
+
+    private Task PlayAsync()
+    {
+        return OnPlay.InvokeAsync(Episode);
+    }
 }
