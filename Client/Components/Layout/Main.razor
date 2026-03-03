@@ -1,0 +1,18 @@
+﻿@inherits PulseComponent
+
+@inject PlayerState State
+
+<article class="flex-1 overflow-y-auto transition-[padding-bottom] p-4 @(State.Current is not null ? "pb-46!" : "pb-20!")">
+    @ChildContent
+</article>
+
+@code
+{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Track(State, s => s.Current);
+    }
+}

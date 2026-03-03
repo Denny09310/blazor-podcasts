@@ -5,7 +5,7 @@ namespace Client.Services;
 
 internal sealed class PlayerState : StateContainer
 {
-    public Episode? Current { get; private set; }
+    public Episode? Current { get; private set => Set(ref field, value); }
 
     public double CurrentTime { get; set => Set(ref field, value); }
     public double CurrentDuration { get; set => Set(ref field, value); }

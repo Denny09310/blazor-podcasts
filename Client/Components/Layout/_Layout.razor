@@ -2,38 +2,38 @@
 @inherits LayoutComponentBase
 
 <main class="flex h-screen flex-col">
+
     <SectionOutlet SectionName="main-layout-header" />
-    <article class="flex-1 overflow-y-auto p-4">
-        @Body
-    </article>
-    <footer class="relative md:hidden">
 
-        <nav class="relative z-10 flex h-16 items-center justify-around border-t bg-background">
-            <NavLink href="/" class="flex flex-col items-center text-xs" ActiveClass="text-primary" Match="NavLinkMatch.All">
-                <LucideIcon Name="house" Size="20" />
-                <span>Home</span>
-            </NavLink>
+   <Main>@Body</Main>
 
-            <NavLink href="/discover" class="flex flex-col items-center text-xs" ActiveClass="text-primary">
-                <LucideIcon Name="compass" Size="20" />
-                <span>Discover</span>
-            </NavLink>
+    <nav class="fixed bottom-0 left-0 right-0 z-20 md:hidden flex h-16 items-center justify-around bg-background">
 
-            <NavLink href="/library" class="flex flex-col items-center text-xs" ActiveClass="text-primary">
-                <LucideIcon Name="library" Size="20" />
-                <span>Library</span>
-            </NavLink>
+        <NavLink href="/" class="flex flex-col items-center text-xs" ActiveClass="text-primary" Match="NavLinkMatch.All">
+            <LucideIcon Name="house" Size="20" />
+            <span>Home</span>
+        </NavLink>
 
-            <NavLink href="/account" class="flex flex-col items-center text-xs" ActiveClass="text-primary">
-                <LucideIcon Name="user" Size="20" />
-                <span>Account</span>
-            </NavLink>
-        </nav>
+        <NavLink href="/discover" class="flex flex-col items-center text-xs" ActiveClass="text-primary">
+            <LucideIcon Name="compass" Size="20" />
+            <span>Discover</span>
+        </NavLink>
 
-        <PlayerProvider />
+        <NavLink href="/library" class="flex flex-col items-center text-xs" ActiveClass="text-primary">
+            <LucideIcon Name="library" Size="20" />
+            <span>Library</span>
+        </NavLink>
 
-    </footer>
+        <NavLink href="/account" class="flex flex-col items-center text-xs" ActiveClass="text-primary">
+            <LucideIcon Name="user" Size="20" />
+            <span>Account</span>
+        </NavLink>
+
+    </nav>
+
 </main>
+
+<PlayerProvider />
 
 <BbPortalHost />
 <BbToastProvider Class="pointer-events-none *:pointer-events-auto" />
