@@ -6,9 +6,9 @@
     <article class="flex-1 overflow-y-auto p-4">
         @Body
     </article>
-    <footer class="bg-background md:hidden">
-        <nav class="flex h-16 items-center justify-around">
+    <footer class="relative md:hidden">
 
+        <nav class="relative z-10 flex h-16 items-center justify-around border-t bg-background">
             <NavLink href="/" class="flex flex-col items-center text-xs" ActiveClass="text-primary" Match="NavLinkMatch.All">
                 <LucideIcon Name="house" Size="20" />
                 <span>Home</span>
@@ -28,12 +28,12 @@
                 <LucideIcon Name="user" Size="20" />
                 <span>Account</span>
             </NavLink>
-
         </nav>
+
+        <PlayerProvider />
+
     </footer>
 </main>
 
 <BbPortalHost />
 <BbToastProvider Class="pointer-events-none *:pointer-events-auto" />
-
-<PlayerProvider />

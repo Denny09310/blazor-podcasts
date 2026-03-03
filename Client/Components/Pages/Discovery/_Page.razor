@@ -1,0 +1,118 @@
+﻿@page "/discover"
+
+@inject NavigationManager Navigation
+
+@inject PodcastIndexClient PodcastIndex
+@inject ToastService Toast
+
+<HeaderContent Class="flex items-center gap-x-2">
+
+    <BbAvatar>
+        <BbAvatarFallback Class="bg-primary text-primary-foreground">D</BbAvatarFallback>
+    </BbAvatar>
+
+    <h1 class="text-2xl tracking-tight flex-1">Discover</h1>
+
+    <BbButton Variant="ButtonVariant.Ghost" Size="ButtonSize.IconSmall">
+        <LucideIcon Name="search" Size="20" />
+    </BbButton>
+
+</HeaderContent>
+
+<div class="space-y-4">
+    <BbInputGroup>
+        <BbInputGroupAddon Align="InputGroupAlign.InlineStart">
+            <LucideIcon Name="search" Size="18" />
+        </BbInputGroupAddon>
+        <BbInputGroupInput @bind-Value="SearchTerm" @bind-Value:after="SearchPodcastsAsync" Placeholder="Discovery your favourite podcasts" />
+        <BbInputGroupAddon Align="InputGroupAlign.InlineEnd" hidden="@(string.IsNullOrWhiteSpace(SearchTerm))">
+            <BbButton Variant="ButtonVariant.Ghost" Size="ButtonSize.IconSmall" @onclick="Clear">
+                <LucideIcon Name="x" Size="20" />
+            </BbButton>
+        </BbInputGroupAddon>
+    </BbInputGroup>
+
+    <section class="space-y-2">
+        @if (loading)
+        {
+            @for (int i = 0; i < 6; i++)
+            {
+                <BbItem Size="ItemSize.Sm" Class="animate-pulse">
+                    <BbItemMedia>
+                        <BbSkeleton Class="size-12 shrink-0 rounded" />
+                    </BbItemMedia>
+                    <BbItemContent>
+                        <BbSkeleton Class="h-3 w-3/4 rounded" />
+                        <BbSkeleton Class="h-3 w-1/2 rounded" />
+                    </BbItemContent>
+                </BbItem>
+            }
+        }
+        else if (!string.IsNullOrWhiteSpace(SearchTerm) && !_podcasts.Any())
+        {
+            <BbEmpty Title="No podcasts found with this search term!" />
+        }
+        else
+        {
+            @foreach (var podcast in _podcasts)
+            {
+                <BbItem AsChild="a" Href="@($"/podcasts/{podcast.Id}")" Variant="ItemVariant.Muted" Size="ItemSize.Sm">
+                    <BbItemMedia>
+                        <img class="size-12 rounded object-cover" src="@podcast.Image" alt="@(podcast.Title)'s image" />
+                    </BbItemMedia>
+                    <BbItemContent Class="min-w-0">
+                        <BbItemTitle Class="line-clamp-1!">@podcast.Title</BbItemTitle>
+                        <BbItemDescription Class="line-clamp-1!">@Regexes.StripHtml(podcast.Description)</BbItemDescription>
+                    </BbItemContent>
+                </BbItem>
+            }
+        }
+    </section>
+</div>
+
+@code
+{
+    [SupplyParameterFromQuery]
+    private string? SearchTerm { get; set; }
+
+    private IEnumerable<PodcastSummary> _podcasts = [];
+    private bool loading;
+
+    private void Clear()
+    {
+        SearchTerm = null;
+        Navigation.NavigateTo(Navigation.GetUriWithQueryParameter("searchTerm", SearchTerm));
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SearchPodcastsAsync();
+    }
+
+    private async Task SearchPodcastsAsync()
+    {
+        try
+        {
+
+            Navigation.NavigateTo(Navigation.GetUriWithQueryParameter("searchTerm", SearchTerm));
+
+            if (string.IsNullOrWhiteSpace(SearchTerm))
+            {
+                return;
+            }
+
+            loading = true;
+
+            var response = await PodcastIndex.Search.ByTermAsync(SearchTerm);
+            _podcasts = response.Searches;
+        }
+        catch (Exception)
+        {
+            Toast.Error("An error occurred while searching for podcasts.");
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+}
