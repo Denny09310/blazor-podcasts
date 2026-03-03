@@ -6,7 +6,34 @@
     <article class="flex-1 overflow-y-auto p-4">
         @Body
     </article>
+    <footer class="bg-background md:hidden">
+        <nav class="flex h-16 items-center justify-around">
+
+            <NavLink href="/" class="flex flex-col items-center text-xs" ActiveClass="text-primary" Match="NavLinkMatch.All">
+                <LucideIcon Name="house" Size="20" />
+                <span>Home</span>
+            </NavLink>
+
+            <NavLink href="/discover" class="flex flex-col items-center text-xs" ActiveClass="text-primary">
+                <LucideIcon Name="compass" Size="20" />
+                <span>Discover</span>
+            </NavLink>
+
+            <NavLink href="/library" class="flex flex-col items-center text-xs" ActiveClass="text-primary">
+                <LucideIcon Name="library" Size="20" />
+                <span>Library</span>
+            </NavLink>
+
+            <NavLink href="/account" class="flex flex-col items-center text-xs" ActiveClass="text-primary">
+                <LucideIcon Name="user" Size="20" />
+                <span>Account</span>
+            </NavLink>
+
+        </nav>
+    </footer>
 </main>
 
 <BbPortalHost />
-<BbToastProvider />
+<BbToastProvider Class="pointer-events-none *:pointer-events-auto" />
+
+<PlayerProvider />

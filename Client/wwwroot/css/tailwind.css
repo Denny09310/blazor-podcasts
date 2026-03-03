@@ -1,9 +1,5 @@
 ﻿@import "tailwindcss";
 
-@utility no-scrollbar {
-    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
-}
-
 :root {
     --background: oklch(0.9940 0 0);
     --foreground: oklch(0 0 0);
@@ -40,7 +36,7 @@
     --font-sans: Plus Jakarta Sans, sans-serif;
     --font-serif: Lora, serif;
     --font-mono: IBM Plex Mono, monospace;
-    --radius: 1.4rem;
+    --radius: 0.5rem;
     --shadow-x: 0;
     --shadow-y: 1px;
     --shadow-blur: 3px;
@@ -172,4 +168,8 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+@utility no-scrollbar {
+    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
 }

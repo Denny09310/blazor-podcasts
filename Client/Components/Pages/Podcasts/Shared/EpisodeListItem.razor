@@ -8,8 +8,8 @@
                      src="@(!string.IsNullOrEmpty(Episode.Image) ? Episode.Image : Image)"
                      alt="@(Episode.Title)'s image" />
             </BbItemMedia>
-            <BbItemContent>
-                <BbItemTitle>@Episode.Title</BbItemTitle>
+            <BbItemContent Class="min-w-0">
+                <BbItemTitle Class="truncate">@Episode.Title</BbItemTitle>
                 <BbItemDescription>@Episode.DatePublished.Humanize()</BbItemDescription>
             </BbItemContent>
             <BbItemActions>

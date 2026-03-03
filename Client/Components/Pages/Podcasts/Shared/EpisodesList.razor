@@ -2,6 +2,7 @@
 @using Client.Components.Pages.Podcasts.Shared.Skeletons
 
 @inject PodcastIndexClient Client
+@inject PlayerState Player
 
 <Loadable Loader="LoadEpisodesAsync" Key="@Podcast">
 
@@ -31,7 +32,7 @@
                         <EpisodeListItem @key="episode.Id"
                                          Episode="@episode"
                                          Image="@Podcast?.Image"
-                                         OnPlay="(e) => Player.PlayAsync(e)" />
+                                         OnPlay="(e) => Player.SetCurrent(e)" />
                     }
                 </div>
             }
@@ -47,9 +48,6 @@
 
 @code
 {
-    [CascadingParameter]
-    private PlayerProvider Player { get; set; } = default!;
-
     [Parameter, EditorRequired]
     public int Id { get; set; }
 
