@@ -22,7 +22,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseRequestLocalization();
 
 app.UseOutputCache();

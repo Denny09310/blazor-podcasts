@@ -29,7 +29,7 @@ internal sealed class PlayerState : StateContainer
     public double Progress =>
         EffectiveDuration <= 0
             ? 0
-            : (CurrentTime / EffectiveDuration) * 100.0;
+            : CurrentTime / EffectiveDuration * 100.0;
 
     public void SetCurrent(Episode episode)
     {
