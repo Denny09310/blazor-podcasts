@@ -40,8 +40,10 @@
     private async Task<Podcast> LoadPodcastAsync(CancellationToken ct)
     {
         var response = await Client.Podcasts.ByFeedIdAsync(Id, ct);
+
         _podcast = response.Value;
-        
+        StateHasChanged();
+
         return _podcast;
     }
 }
