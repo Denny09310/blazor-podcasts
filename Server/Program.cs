@@ -2,8 +2,6 @@ using Yarp.ReverseProxy.Transforms;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLocalization();
-
 builder.Services.AddOutputCache(options =>
 {
     options.AddPodcastIndexPolicy();
@@ -22,7 +20,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseRequestLocalization();
 
 app.UseOutputCache();
 
